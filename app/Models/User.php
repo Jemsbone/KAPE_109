@@ -2,47 +2,49 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    // Add this line to specify the primary key
+    protected $primaryKey = 'user_id';
+
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
+        'address',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
+        'updated_at',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+        ];
+    }
+
+    public static function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'required|string|max:20',
+            'password' => 'required|min:8|confirmed',
+            'address' => 'required|string|max:500',
         ];
     }
 }
