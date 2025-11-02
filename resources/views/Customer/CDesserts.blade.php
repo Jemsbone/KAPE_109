@@ -5,7 +5,7 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Kape Na! - Coffee Products</title>
+   <title>Kape Na! - Dessert Products</title>
    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -141,10 +141,28 @@
          margin: 0 1rem;
          font-size: 2rem;
          color: var(--white);
+         position: relative;
       }
 
       .header .navbar a:hover {
          color: var(--main-color);
+      }
+
+      /* Cart Count Badge */
+      .cart-count {
+         position: absolute;
+         top: -8px;
+         right: -8px;
+         background-color: var(--main-color);
+         color: var(--black);
+         border-radius: 50%;
+         width: 20px;
+         height: 20px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 1.2rem;
+         font-weight: bold;
       }
 
       /* User Profile Styles */
@@ -647,7 +665,10 @@
          <nav class="navbar">
             <a href="{{ route('customer.home') }}">Home</a>
             <a href="{{ route('menu') }}">Menu</a>
-            <a href="{{ route('orders') }}">Orders</a>
+            <a href="{{ route('customer.cart') }}" class="cart-link">
+               Cart 
+               <span id="cart-count" class="cart-count">0</span>
+            </a>
             <a href="{{ route('about') }}">About</a>
          </nav>
          
@@ -663,7 +684,7 @@
                      </div>
                      <div class="dropdown-content">
                         <a href="#"><i class="fas fa-user"></i> My Profile</a>
-                        <a href="#"><i class="fas fa-shopping-bag"></i> My Orders</a>
+                        <a href="{{ route('customer.cart') }}">Cart</a>
                         <a href="#"><i class="fas fa-cog"></i> Settings</a>
                         <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                            @csrf
@@ -697,12 +718,12 @@
       <h2>CATEGORY</h2>
    </section>
 
-   <!-- Coffee Products Section -->
+   <!-- Dessert Products Section -->
    <section class="products">
       <h1 class="title">Dessert Products</h1>
       <div class="products-container">
          <div class="product-box">
-            <img src="{{ asset('project images/dessert-1.png') }}" alt="Cappuccino" class="product-image">
+            <img src="{{ asset('project images/dessert-1.png') }}" alt="Strawberry Frappé or Smoothie" class="product-image">
             <h3>Strawberry Frappé or Smoothie</h3>
             <p class="price">$200</p>
             <div class="quantity-controls">
@@ -710,11 +731,11 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="29" data-name="Strawberry Frappé or Smoothie" data-price="200" data-image="{{ asset('project images/dessert-1.png') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
-            <img src="{{ asset('project images/dessert-3.png') }}" alt="Corrado" class="product-image">
+            <img src="{{ asset('project images/dessert-3.png') }}" alt="Caramel Oreo Sundae or Soft Serve Parfait" class="product-image">
             <h3>Caramel Oreo Sundae or Soft Serve Parfait</h3>
             <p class="price">$20</p>
             <div class="quantity-controls">
@@ -722,11 +743,11 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="30" data-name="Caramel Oreo Sundae or Soft Serve Parfait" data-price="20" data-image="{{ asset('project images/dessert-3.png') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
-            <img src="{{ asset('project images/dessert-4.png') }}" alt="Latte" class="product-image">
+            <img src="{{ asset('project images/dessert-4.png') }}" alt="Chocolate Cupcake with Whipped Cream and Cherry" class="product-image">
             <h3>Chocolate Cupcake with Whipped Cream and Cherry</h3>
             <p class="price">$20</p>
             <div class="quantity-controls">
@@ -734,11 +755,11 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="31" data-name="Chocolate Cupcake with Whipped Cream and Cherry" data-price="20" data-image="{{ asset('project images/dessert-4.png') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
-            <img src="{{ asset('project images/dessert-5.png') }}" alt="Red Eye" class="product-image">
+            <img src="{{ asset('project images/dessert-5.png') }}" alt="Strawberry Ice Cream Sundae" class="product-image">
             <h3>Strawberry Ice Cream Sundae</h3>
             <p class="price">$20</p>
             <div class="quantity-controls">
@@ -746,7 +767,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="32" data-name="Strawberry Ice Cream Sundae" data-price="20" data-image="{{ asset('project images/dessert-5.png') }}">Add to Cart</button>
          </div>
       </div>
    </section>
@@ -849,6 +870,88 @@
 
    <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
    <script>
+      // Cart functionality
+      class Cart {
+         constructor() {
+            this.items = this.loadCart();
+         }
+
+         // Load cart from localStorage
+         loadCart() {
+            const cart = localStorage.getItem('cart');
+            return cart ? JSON.parse(cart) : [];
+         }
+
+         // Save cart to localStorage
+         saveCart() {
+            localStorage.setItem('cart', JSON.stringify(this.items));
+         }
+
+         // Add item to cart
+         addItem(productId, name, price, image, quantity) {
+            const existingItem = this.items.find(item => item.id === productId);
+            
+            if (existingItem) {
+               existingItem.quantity += quantity;
+            } else {
+               this.items.push({
+                  id: productId,
+                  name: name,
+                  price: price,
+                  image: image,
+                  quantity: quantity
+               });
+            }
+            
+            this.saveCart();
+            this.updateCartCount();
+         }
+
+         // Remove item from cart
+         removeItem(productId) {
+            this.items = this.items.filter(item => item.id !== productId);
+            this.saveCart();
+            this.updateCartCount();
+         }
+
+         // Update item quantity
+         updateQuantity(productId, quantity) {
+            const item = this.items.find(item => item.id === productId);
+            if (item) {
+               item.quantity = quantity;
+               this.saveCart();
+            }
+         }
+
+         // Get total items count
+         getTotalItems() {
+            return this.items.reduce((total, item) => total + item.quantity, 0);
+         }
+
+         // Get cart total price
+         getTotalPrice() {
+            return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+         }
+
+         // Update cart count in header
+         updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+               cartCount.textContent = this.getTotalItems();
+            }
+         }
+
+         // Clear cart
+         clearCart() {
+            this.items = [];
+            this.saveCart();
+            this.updateCartCount();
+         }
+      }
+
+      // Initialize cart
+      const cart = new Cart();
+
       // Quantity controls functionality
       document.querySelectorAll('.quantity-btn').forEach(button => {
          button.addEventListener('click', function() {
@@ -869,9 +972,14 @@
       document.querySelectorAll('.add-to-cart-btn').forEach(button => {
          button.addEventListener('click', function() {
             const productBox = this.closest('.product-box');
-            const productName = productBox.querySelector('h3').textContent;
-            const productPrice = productBox.querySelector('.price').textContent;
-            const quantity = productBox.querySelector('.quantity-display').textContent;
+            const productId = this.getAttribute('data-id');
+            const productName = this.getAttribute('data-name');
+            const productPrice = parseFloat(this.getAttribute('data-price'));
+            const productImage = this.getAttribute('data-image');
+            const quantity = parseInt(productBox.querySelector('.quantity-display').textContent);
+            
+            // Add item to cart
+            cart.addItem(productId, productName, productPrice, productImage, quantity);
             
             // Show success message
             const successMessage = document.createElement('div');
@@ -880,7 +988,7 @@
             
             // Remove any existing success message
             const existingMessage = document.querySelector('.success-message');
-            if (existingMessage) {
+            if (existingMessage && !existingMessage.id) {
                existingMessage.remove();
             }
             
@@ -897,14 +1005,9 @@
          });
       });
 
-      // Auto-hide success message after 5 seconds
+      // Initialize cart count on page load
       document.addEventListener('DOMContentLoaded', function() {
-         const successMessage = document.querySelector('.success-message');
-         if (successMessage) {
-            setTimeout(() => {
-               successMessage.style.display = 'none';
-            }, 5000);
-         }
+         cart.updateCartCount();
       });
    </script>
 </body>

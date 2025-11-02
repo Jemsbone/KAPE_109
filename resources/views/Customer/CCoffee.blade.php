@@ -141,10 +141,28 @@
          margin: 0 1rem;
          font-size: 2rem;
          color: var(--white);
+         position: relative;
       }
 
       .header .navbar a:hover {
          color: var(--main-color);
+      }
+
+      /* Cart Count Badge */
+      .cart-count {
+         position: absolute;
+         top: -8px;
+         right: -8px;
+         background-color: var(--main-color);
+         color: var(--black);
+         border-radius: 50%;
+         width: 20px;
+         height: 20px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 1.2rem;
+         font-weight: bold;
       }
 
       /* User Profile Styles */
@@ -647,7 +665,10 @@
          <nav class="navbar">
             <a href="{{ route('customer.home') }}">Home</a>
             <a href="{{ route('menu') }}">Menu</a>
-            <a href="{{ route('orders') }}">Orders</a>
+            <a href="{{ route('customer.cart') }}" class="cart-link">
+               Cart 
+               <span id="cart-count" class="cart-count">0</span>
+            </a>
             <a href="{{ route('about') }}">About</a>
          </nav>
          
@@ -663,7 +684,7 @@
                      </div>
                      <div class="dropdown-content">
                         <a href="#"><i class="fas fa-user"></i> My Profile</a>
-                        <a href="#"><i class="fas fa-shopping-bag"></i> My Orders</a>
+                        <a href="{{ route('customer.cart') }}">Cart</a>
                         <a href="#"><i class="fas fa-cog"></i> Settings</a>
                         <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                            @csrf
@@ -710,7 +731,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="1" data-name="Cappuccino" data-price="200" data-image="{{ asset('uploaded_img/cappuccino-1659544996.png') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -722,7 +743,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="2" data-name="Cortado" data-price="20" data-image="{{ asset('uploaded_img/cortado-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -734,7 +755,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="3" data-name="Latte" data-price="20" data-image="{{ asset('uploaded_img/latte-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -746,7 +767,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="4" data-name="Red Eye" data-price="20" data-image="{{ asset('uploaded_img/red-eye-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -758,7 +779,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="5" data-name="Mocha" data-price="20" data-image="{{ asset('uploaded_img/mocha-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -770,7 +791,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="6" data-name="Raf" data-price="20" data-image="{{ asset('uploaded_img/raf-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -782,7 +803,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="7" data-name="Macchiato" data-price="20" data-image="{{ asset('uploaded_img/macchiato-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -794,7 +815,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="8" data-name="Cold Brew" data-price="20" data-image="{{ asset('uploaded_img/cold-brew-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -806,7 +827,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="9" data-name="Espresso Con Panna" data-price="200" data-image="{{ asset('uploaded_img/espresso-con-panna-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -818,7 +839,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="10" data-name="Café Cubano" data-price="20" data-image="{{ asset('uploaded_img/cafe-cubano-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -830,7 +851,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="11" data-name="Espresso Romano" data-price="20" data-image="{{ asset('uploaded_img/espresso-romano-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -842,7 +863,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="12" data-name="Long Black" data-price="20" data-image="{{ asset('uploaded_img/long-black-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -854,7 +875,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="13" data-name="Caffè Breve" data-price="20" data-image="{{ asset('uploaded_img/caffe-breve-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -866,7 +887,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="14" data-name="Affogato" data-price="20" data-image="{{ asset('uploaded_img/affogato-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -878,7 +899,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="15" data-name="Quad Shots" data-price="20" data-image="{{ asset('uploaded_img/quad-shots-1659544996.webp') }}">Add to Cart</button>
          </div>
 
          <div class="product-box">
@@ -890,7 +911,7 @@
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
+            <button class="add-to-cart-btn" data-id="16" data-name="Mexican Coffee" data-price="20" data-image="{{ asset('uploaded_img/mexican-coffee-1659544996.webp') }}">Add to Cart</button>
          </div>
       </div>
    </section>
@@ -993,6 +1014,88 @@
 
    <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
    <script>
+      // Cart functionality
+      class Cart {
+         constructor() {
+            this.items = this.loadCart();
+         }
+
+         // Load cart from localStorage
+         loadCart() {
+            const cart = localStorage.getItem('cart');
+            return cart ? JSON.parse(cart) : [];
+         }
+
+         // Save cart to localStorage
+         saveCart() {
+            localStorage.setItem('cart', JSON.stringify(this.items));
+         }
+
+         // Add item to cart
+         addItem(productId, name, price, image, quantity) {
+            const existingItem = this.items.find(item => item.id === productId);
+            
+            if (existingItem) {
+               existingItem.quantity += quantity;
+            } else {
+               this.items.push({
+                  id: productId,
+                  name: name,
+                  price: price,
+                  image: image,
+                  quantity: quantity
+               });
+            }
+            
+            this.saveCart();
+            this.updateCartCount();
+         }
+
+         // Remove item from cart
+         removeItem(productId) {
+            this.items = this.items.filter(item => item.id !== productId);
+            this.saveCart();
+            this.updateCartCount();
+         }
+
+         // Update item quantity
+         updateQuantity(productId, quantity) {
+            const item = this.items.find(item => item.id === productId);
+            if (item) {
+               item.quantity = quantity;
+               this.saveCart();
+            }
+         }
+
+         // Get total items count
+         getTotalItems() {
+            return this.items.reduce((total, item) => total + item.quantity, 0);
+         }
+
+         // Get cart total price
+         getTotalPrice() {
+            return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+         }
+
+         // Update cart count in header
+         updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+               cartCount.textContent = this.getTotalItems();
+            }
+         }
+
+         // Clear cart
+         clearCart() {
+            this.items = [];
+            this.saveCart();
+            this.updateCartCount();
+         }
+      }
+
+      // Initialize cart
+      const cart = new Cart();
+
       // Quantity controls functionality
       document.querySelectorAll('.quantity-btn').forEach(button => {
          button.addEventListener('click', function() {
@@ -1013,9 +1116,14 @@
       document.querySelectorAll('.add-to-cart-btn').forEach(button => {
          button.addEventListener('click', function() {
             const productBox = this.closest('.product-box');
-            const productName = productBox.querySelector('h3').textContent;
-            const productPrice = productBox.querySelector('.price').textContent;
-            const quantity = productBox.querySelector('.quantity-display').textContent;
+            const productId = this.getAttribute('data-id');
+            const productName = this.getAttribute('data-name');
+            const productPrice = parseFloat(this.getAttribute('data-price'));
+            const productImage = this.getAttribute('data-image');
+            const quantity = parseInt(productBox.querySelector('.quantity-display').textContent);
+            
+            // Add item to cart
+            cart.addItem(productId, productName, productPrice, productImage, quantity);
             
             // Show success message
             const successMessage = document.createElement('div');
@@ -1024,7 +1132,7 @@
             
             // Remove any existing success message
             const existingMessage = document.querySelector('.success-message');
-            if (existingMessage) {
+            if (existingMessage && !existingMessage.id) {
                existingMessage.remove();
             }
             
@@ -1041,14 +1149,9 @@
          });
       });
 
-      // Auto-hide success message after 5 seconds
+      // Initialize cart count on page load
       document.addEventListener('DOMContentLoaded', function() {
-         const successMessage = document.querySelector('.success-message');
-         if (successMessage) {
-            setTimeout(() => {
-               successMessage.style.display = 'none';
-            }, 5000);
-         }
+         cart.updateCartCount();
       });
    </script>
 </body>

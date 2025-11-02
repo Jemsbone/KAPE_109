@@ -198,9 +198,6 @@
             <a href="/" class="logo">Kape Na! <i class="fas fa-coffee"></i></a>
             <nav class="navbar">
                 <a href="/">Home</a>
-                <a href="/menu">Menu</a>
-                <a href="/orders">Orders</a>
-                <a href="/about">About</a>
             </nav>
         </div>
     </header>
