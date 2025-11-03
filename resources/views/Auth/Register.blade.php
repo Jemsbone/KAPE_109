@@ -216,6 +216,13 @@
                 <div class="success-message">{{ session('success') }}</div>
             @endif
 
+            <div style="background: rgba(211, 173, 127, 0.1); border-left: 4px solid var(--main-color); padding: 1.5rem; margin-bottom: 2rem; border-radius: 0.5rem;">
+                <p style="margin: 0; font-size: 1.5rem; color: var(--light-color);">
+                    <i class="fas fa-info-circle" style="color: var(--main-color);"></i>
+                    After registration, you'll receive a verification email. Please check your inbox to verify your account.
+                </p>
+            </div>
+
             <!-- ✅ Your Corrected Registration Form -->
             <form id="registerForm" action="{{ route('register') }}" method="post">
                 @csrf

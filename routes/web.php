@@ -22,7 +22,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // ✅ Customer Home (protected route for logged-in users)
 Route::get('/customer/home', function () {
     return view('Customer.customerhome');
-})->name('customer.home')->middleware('auth');
+})->name('customer.home')->middleware(['auth', 'verified']);
 
 // ✅ Customer Menu Route (Main menu page)
 Route::get('/customer/cmenu', [CMenuController::class, 'index'])->name('customer.cmenu');
@@ -54,8 +54,24 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ✅ Protected Routes (require authentication)
-Route::middleware(['auth'])->group(function () {
+// ✅ Email Verification Routes
+// Verification link from email (no auth required - will auto-login)
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->middleware(['signed'])
+    ->name('verification.verify');
+
+// Routes that require authentication
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', [AuthController::class, 'verificationNotice'])
+        ->name('verification.notice');
+    
+    Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+});
+
+// ✅ Protected Routes (require authentication and email verification)
+Route::middleware(['auth', 'verified'])->group(function () {
     // ✅ Menu Page
     Route::get('/menu', [CMenuController::class, 'index'])->name('menu');
 
@@ -63,7 +79,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CCartController::class, 'index'])->name('cart');
 
     // ✅ Checkout Processing (NEW)
-    Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process')->middleware('auth');
+    Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+    
     // ✅ Orders Page
     Route::get('/orders', function () {
         return view('orders');
