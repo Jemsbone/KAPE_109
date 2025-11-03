@@ -54,19 +54,20 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ✅ Email Verification Routes
-// Verification link from email (no auth required - will auto-login)
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-    ->middleware(['signed'])
-    ->name('verification.verify');
-
-// Routes that require authentication
+// ✅ Email Verification Routes (OTP-based)
 Route::middleware('auth')->group(function () {
+    // Verification page (shows OTP input form)
     Route::get('/email/verify', [AuthController::class, 'verificationNotice'])
         ->name('verification.notice');
     
+    // Verify OTP code
+    Route::post('/email/verify-otp', [AuthController::class, 'verifyOtp'])
+        ->middleware('throttle:5,1')
+        ->name('verification.verify');
+    
+    // Resend OTP code
     Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
-        ->middleware('throttle:6,1')
+        ->middleware('throttle:3,1')
         ->name('verification.send');
 });
 

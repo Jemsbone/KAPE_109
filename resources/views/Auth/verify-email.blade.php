@@ -231,29 +231,68 @@
                 </div>
             @endif
 
+            @if (session('info'))
+                <div class="success-message">
+                    <i class="fas fa-info-circle"></i> {{ session('info') }}
+                </div>
+            @endif
+
             <p>
-                Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?
+                Thanks for signing up! We've sent a 6-digit verification code to your email address.
             </p>
 
             <div class="info-box">
                 <p>
-                    <i class="fas fa-info-circle" style="color: var(--main-color);"></i>
-                    Verification email sent to: <span class="user-email">{{ Auth::user()->email }}</span>
+                    <i class="fas fa-envelope" style="color: var(--main-color);"></i>
+                    Verification code sent to: <span class="user-email">{{ Auth::user()->email }}</span>
                 </p>
             </div>
 
-            <p>
-                If you didn't receive the email, we will gladly send you another.
-            </p>
-
-            <form method="POST" action="{{ route('verification.send') }}" style="display: inline;">
+            <!-- OTP Input Form -->
+            <form method="POST" action="{{ route('verification.verify') }}" id="otpForm">
                 @csrf
+                <div style="margin: 2rem 0;">
+                    <label for="otp" style="color: var(--main-color); font-size: 1.8rem; margin-bottom: 1rem; display: block;">
+                        Enter Verification Code
+                    </label>
+                    <input 
+                        type="text" 
+                        name="otp" 
+                        id="otp" 
+                        maxlength="6"
+                        placeholder="000000"
+                        style="width: 100%; max-width: 30rem; padding: 1.5rem; font-size: 2.5rem; text-align: center; letter-spacing: 1rem; border: 2px solid var(--main-color); border-radius: 0.5rem; background: var(--black); color: var(--white); margin: 0 auto; display: block;"
+                        required
+                        autocomplete="off"
+                        inputmode="numeric"
+                        pattern="[0-9]{6}"
+                    >
+                    @error('otp')
+                        <p style="color: #e74c3c; font-size: 1.4rem; margin-top: 1rem;">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <button type="submit" class="btn">
-                    <i class="fas fa-paper-plane"></i> Resend Verification Email
+                    <i class="fas fa-check-circle"></i> Verify Email
                 </button>
             </form>
 
             <div class="divider"></div>
+
+            <p>
+                Didn't receive the code?
+            </p>
+
+            <form method="POST" action="{{ route('verification.send') }}" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fas fa-paper-plane"></i> Resend Code
+                </button>
+            </form>
+
+            <p style="font-size: 1.4rem; margin-top: 2rem; color: var(--light-color);">
+                <i class="fas fa-clock"></i> Code expires in 10 minutes
+            </p>
 
             <p style="font-size: 1.6rem; margin-top: 2rem;">
                 Need help? Check your spam folder or contact our support team.
@@ -271,6 +310,38 @@
                     successMessage.style.opacity = '0';
                     setTimeout(() => successMessage.remove(), 500);
                 }, 5000);
+            }
+
+            // Auto-focus on OTP input
+            const otpInput = document.getElementById('otp');
+            if (otpInput) {
+                otpInput.focus();
+                
+                // Only allow numbers
+                otpInput.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Auto-submit when 6 digits are entered
+                    if (this.value.length === 6) {
+                        // Add slight delay for better UX
+                        setTimeout(() => {
+                            document.getElementById('otpForm').submit();
+                        }, 300);
+                    }
+                });
+
+                // Paste support
+                otpInput.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pasteData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').substring(0, 6);
+                    this.value = pasteData;
+                    
+                    if (pasteData.length === 6) {
+                        setTimeout(() => {
+                            document.getElementById('otpForm').submit();
+                        }, 300);
+                    }
+                });
             }
         });
     </script>

@@ -109,7 +109,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Resend verification email
+     * Resend OTP verification code
      */
     public function resendVerification(Request $request)
     {
@@ -119,39 +119,34 @@ class AuthController extends Controller
 
         $request->user()->sendEmailVerificationNotification();
 
-        return back()->with('success', 'A new verification link has been sent to your email address!');
+        return back()->with('success', 'A new verification code has been sent to your email address!');
     }
 
     /**
-     * Handle email verification from link
+     * Handle OTP verification
      */
-    public function verifyEmail(Request $request, $id, $hash)
+    public function verifyOtp(Request $request)
     {
-        // Find the user by ID
-        $user = User::findOrFail($id);
+        $request->validate([
+            'otp' => 'required|string|size:6',
+        ]);
 
-        // Verify the hash matches
-        if (!hash_equals($hash, sha1($user->getEmailForVerification()))) {
-            abort(403, 'Invalid verification link.');
+        $user = $request->user();
+
+        // Check if already verified
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->route('customer.home')
+                ->with('info', 'Your email is already verified!');
         }
 
-        // Check if link has expired (60 minutes)
-        if ($request->hasValidSignature() === false) {
-            return redirect()->route('verification.notice')
-                ->with('error', 'This verification link has expired. Please request a new one.');
+        // Verify the OTP code
+        if ($user->verifyOtpCode($request->otp)) {
+            return redirect()->route('customer.home')
+                ->with('success', 'Your email has been verified successfully! Welcome to Kape Na!');
         }
 
-        // Mark email as verified if not already
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
-        }
-
-        // Log the user in automatically
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        // Redirect to customer home with success message
-        return redirect()->route('customer.home')
-            ->with('success', 'Your email has been verified successfully! Welcome to Kape Na!');
+        return back()->withErrors([
+            'otp' => 'Invalid or expired verification code. Please try again or request a new code.',
+        ]);
     }
 }

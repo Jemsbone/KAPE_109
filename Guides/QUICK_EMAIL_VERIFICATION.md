@@ -2,7 +2,9 @@
 
 ## ✅ What's Been Implemented
 
-Your registration now requires **email verification** before users can access the application!
+Your registration now requires **OTP email verification** before users can access the application!
+
+> **NEW**: We now use OTP (One-Time Password) codes instead of verification links. Users receive a 6-digit code via email that expires in 10 minutes.
 
 ## 🚀 Quick Setup (3 Steps)
 
@@ -52,23 +54,24 @@ php artisan cache:clear
 ### Step 3: Test It!
 1. Go to `/register`
 2. Register a new account
-3. Check your email (or log file)
-4. Click the verification link
-5. Done! ✅
+3. Check your email (or log file) for 6-digit OTP code
+4. Enter the code on the verification page
+5. Done! ✅ (Code auto-submits when you enter 6 digits)
 
 ## 📧 How It Works
 
 ### For New Users:
 1. **Register** → User fills registration form
-2. **Email Sent** → Verification email sent automatically
-3. **Verify Page** → User sees "Please verify your email" page
-4. **Click Link** → User clicks link in email
-5. **Verified!** → User can now access all features
+2. **OTP Sent** → 6-digit code sent to email automatically
+3. **Verify Page** → User sees OTP input form
+4. **Enter Code** → User enters the 6-digit code
+5. **Auto-Submit** → Code is submitted automatically
+6. **Verified!** → User can now access all features
 
 ### For Existing Unverified Users:
 - Can't access protected pages
-- Redirected to verification notice
-- Can resend verification email
+- Redirected to OTP verification page
+- Can resend OTP code (new code expires in 10 minutes)
 - Must verify to continue
 
 ## 🎨 What Changed
