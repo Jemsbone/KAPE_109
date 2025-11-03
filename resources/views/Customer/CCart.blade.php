@@ -240,6 +240,53 @@
          border: 1px solid #2ecc71;
       }
 
+      .error-message {
+         background-color: rgba(231, 76, 60, 0.2);
+         color: #e74c3c;
+         padding: 1rem 2rem;
+         margin: 1rem auto;
+         max-width: 1200px;
+         border-radius: 0.5rem;
+         font-size: 1.6rem;
+         text-align: center;
+         border: 1px solid #e74c3c;
+      }
+
+      /* Loading overlay */
+      .loading-overlay {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.8);
+         display: none;
+         justify-content: center;
+         align-items: center;
+         z-index: 9999;
+         flex-direction: column;
+      }
+
+      .loading-spinner {
+         width: 50px;
+         height: 50px;
+         border: 5px solid var(--main-color);
+         border-top: 5px solid transparent;
+         border-radius: 50%;
+         animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+         0% { transform: rotate(0deg); }
+         100% { transform: rotate(360deg); }
+      }
+
+      .loading-text {
+         color: var(--white);
+         font-size: 1.8rem;
+         margin-top: 1rem;
+      }
+
       /* Cart Section Styles */
       .cart-section {
          min-height: 70vh;
@@ -251,6 +298,13 @@
          grid-template-columns: 2fr 1fr;
          gap: 3rem;
          margin-top: 2rem;
+      }
+
+      .cart-container.empty {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         grid-template-columns: none;
       }
 
       @media (max-width: 768px) {
@@ -393,6 +447,11 @@
          height: fit-content;
       }
 
+      .cart-container.empty .cart-summary {
+         max-width: 500px;
+         width: 100%;
+      }
+
       .summary-title {
          font-size: 2.2rem;
          color: var(--white);
@@ -445,6 +504,12 @@
          letter-spacing: .1rem;
       }
 
+      .checkout-btn:disabled {
+         background-color: var(--light-color);
+         cursor: not-allowed;
+         letter-spacing: normal;
+      }
+
       .continue-shopping {
          display: block;
          text-align: center;
@@ -452,6 +517,109 @@
          font-size: 1.6rem;
          color: var(--main-color);
          transition: all 0.3s;
+      }
+
+      /* Payment Method Styles */
+      .payment-section {
+         margin-top: 2rem;
+         padding-top: 2rem;
+         border-top: 1px solid var(--light-color);
+      }
+
+      .payment-title {
+         font-size: 1.8rem;
+         color: var(--white);
+         margin-bottom: 1.5rem;
+         text-align: center;
+      }
+
+      .payment-method {
+         margin-bottom: 1.5rem;
+      }
+
+      .payment-option {
+         display: flex;
+         align-items: center;
+         padding: 1rem;
+         margin-bottom: 1rem;
+         background-color: rgba(255, 255, 255, 0.05);
+         border-radius: 0.5rem;
+         cursor: pointer;
+         transition: all 0.3s;
+         border: 2px solid transparent;
+      }
+
+      .payment-option:hover {
+         background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .payment-option.selected {
+         border-color: var(--main-color);
+         background-color: rgba(211, 173, 127, 0.1);
+      }
+
+      .payment-option input[type="radio"] {
+         width: 2rem;
+         height: 2rem;
+         margin-right: 1rem;
+         cursor: pointer;
+         accent-color: var(--main-color);
+      }
+
+      .payment-option label {
+         font-size: 1.6rem;
+         color: var(--white);
+         cursor: pointer;
+         flex: 1;
+         display: flex;
+         align-items: center;
+         gap: 0.8rem;
+      }
+
+      .payment-option i {
+         font-size: 2rem;
+         color: var(--main-color);
+      }
+
+      .payment-details {
+         display: none;
+         margin-top: 1rem;
+         padding: 1.5rem;
+         background-color: rgba(255, 255, 255, 0.05);
+         border-radius: 0.5rem;
+         border-left: 3px solid var(--main-color);
+      }
+
+      .payment-details.active {
+         display: block;
+      }
+
+      .payment-details label {
+         display: block;
+         font-size: 1.4rem;
+         color: var(--white);
+         margin-bottom: 0.5rem;
+      }
+
+      .payment-details input {
+         width: 100%;
+         padding: 1rem;
+         font-size: 1.6rem;
+         background-color: rgba(255, 255, 255, 0.1);
+         border: 1px solid var(--light-color);
+         border-radius: 0.5rem;
+         color: var(--white);
+         outline: none;
+         transition: all 0.3s;
+      }
+
+      .payment-details input:focus {
+         border-color: var(--main-color);
+         background-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .payment-details input::placeholder {
+         color: var(--light-color);
       }
 
       .continue-shopping:hover {
@@ -463,6 +631,12 @@
          text-align: center;
          padding: 4rem 2rem;
          grid-column: 1 / -1;
+      }
+
+      .cart-container.empty .empty-cart {
+         margin-top: 3rem;
+         max-width: 600px;
+         width: 100%;
       }
 
       .empty-cart-icon {
@@ -630,6 +804,12 @@
 </head>
 
 <body>
+   <!-- Loading Overlay -->
+   <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Processing your order...</div>
+   </div>
+
    <!-- Updated Header section -->
    <header class="header">
       <div class="flex">
@@ -682,6 +862,13 @@
       </div>
    @endif
 
+   <!-- Error Messages -->
+   @if(session('error'))
+      <div class="error-message">
+         {{ session('error') }}
+      </div>
+   @endif
+
    <!-- Cart Section -->
    <section class="cart-section">
       <h1 class="title">My Cart</h1>
@@ -717,7 +904,46 @@
                <span class="summary-value" id="total">$0</span>
             </div>
             
-            <button class="checkout-btn">Proceed to Checkout</button>
+            <!-- Payment Method Section -->
+            <div class="payment-section">
+               <h4 class="payment-title">Select Payment Method</h4>
+               
+               <div class="payment-method">
+                  <div class="payment-option" onclick="selectPaymentMethod('cash')">
+                     <input type="radio" name="payment_method" id="payment-cash" value="cash">
+                     <label for="payment-cash">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Cash</span>
+                     </label>
+                  </div>
+                  
+                  <div class="payment-option" onclick="selectPaymentMethod('gcash')">
+                     <input type="radio" name="payment_method" id="payment-gcash" value="gcash">
+                     <label for="payment-gcash">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>GCash</span>
+                     </label>
+                  </div>
+                  <div class="payment-details" id="gcash-details">
+                     <label for="gcash-phone">Phone Number</label>
+                     <input type="tel" id="gcash-phone" placeholder="09XX XXX XXXX" maxlength="11">
+                  </div>
+                  
+                  <div class="payment-option" onclick="selectPaymentMethod('bank')">
+                     <input type="radio" name="payment_method" id="payment-bank" value="bank">
+                     <label for="payment-bank">
+                        <i class="fas fa-university"></i>
+                        <span>Bank Transfer</span>
+                     </label>
+                  </div>
+                  <div class="payment-details" id="bank-details">
+                     <label for="bank-account">Bank Account Number</label>
+                     <input type="text" id="bank-account" placeholder="Enter your bank account number">
+                  </div>
+               </div>
+            </div>
+            
+            <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
             <a href="{{ route('customer.cmenu') }}" class="continue-shopping">Continue Shopping</a>
          </div>
          
@@ -870,27 +1096,230 @@
       // Initialize cart
       const cart = new Cart();
 
+      // Show loading overlay
+      function showLoading() {
+         document.getElementById('loadingOverlay').style.display = 'flex';
+      }
+
+      // Hide loading overlay
+      function hideLoading() {
+         document.getElementById('loadingOverlay').style.display = 'none';
+      }
+
+      // Show message
+      function showMessage(message, type = 'success') {
+         const messageDiv = document.createElement('div');
+         messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+         messageDiv.textContent = message;
+         
+         document.querySelector('.cart-section').insertBefore(messageDiv, document.querySelector('.title'));
+         
+         setTimeout(() => {
+            messageDiv.remove();
+         }, 5000);
+      }
+
+      // Payment method selection
+      function selectPaymentMethod(method) {
+         // Remove selected class from all options
+         document.querySelectorAll('.payment-option').forEach(option => {
+            option.classList.remove('selected');
+         });
+         
+         // Hide all payment details
+         document.querySelectorAll('.payment-details').forEach(details => {
+            details.classList.remove('active');
+         });
+         
+         // Select the radio button
+         const radioButton = document.getElementById(`payment-${method}`);
+         if (radioButton) {
+            radioButton.checked = true;
+            radioButton.closest('.payment-option').classList.add('selected');
+         }
+         
+         // Show relevant payment details
+         if (method === 'gcash') {
+            document.getElementById('gcash-details').classList.add('active');
+         } else if (method === 'bank') {
+            document.getElementById('bank-details').classList.add('active');
+         }
+      }
+
+      // Validate payment method
+      function validatePaymentMethod() {
+         const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+         
+         if (!selectedPayment) {
+            showMessage('Please select a payment method', 'error');
+            return false;
+         }
+         
+         const paymentMethod = selectedPayment.value;
+         
+         // Validate GCash phone number
+         if (paymentMethod === 'gcash') {
+            const phoneNumber = document.getElementById('gcash-phone').value.trim();
+            if (!phoneNumber) {
+               showMessage('Please enter your GCash phone number', 'error');
+               return false;
+            }
+            if (!/^09\d{9}$/.test(phoneNumber)) {
+               showMessage('Please enter a valid GCash phone number (09XXXXXXXXX)', 'error');
+               return false;
+            }
+         }
+         
+         // Validate Bank account number
+         if (paymentMethod === 'bank') {
+            const bankAccount = document.getElementById('bank-account').value.trim();
+            if (!bankAccount) {
+               showMessage('Please enter your bank account number', 'error');
+               return false;
+            }
+            if (bankAccount.length < 8) {
+               showMessage('Please enter a valid bank account number', 'error');
+               return false;
+            }
+         }
+         
+         return true;
+      }
+
+      // Get payment method data
+      function getPaymentMethodData() {
+         const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+         if (!selectedPayment) return null;
+         
+         const paymentMethod = selectedPayment.value;
+         const paymentData = {
+            method: paymentMethod
+         };
+         
+         if (paymentMethod === 'gcash') {
+            paymentData.phone_number = document.getElementById('gcash-phone').value.trim();
+         } else if (paymentMethod === 'bank') {
+            paymentData.bank_account = document.getElementById('bank-account').value.trim();
+         }
+         
+         return paymentData;
+      }
+
+      // Process checkout
+      async function processCheckout() {
+         try {
+            showLoading();
+            
+            // Check if user is authenticated
+            const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
+            
+            if (!isAuthenticated) {
+               hideLoading();
+               showMessage('Please log in to proceed with checkout.', 'error');
+               setTimeout(() => {
+                  window.location.href = '{{ route("login") }}';
+               }, 2000);
+               return;
+            }
+
+            // Check if cart is empty
+            if (cart.items.length === 0) {
+               hideLoading();
+               showMessage('Your cart is empty!', 'error');
+               return;
+            }
+
+            // Validate payment method
+            if (!validatePaymentMethod()) {
+               hideLoading();
+               return;
+            }
+
+            // Get payment method data
+            const paymentMethodData = getPaymentMethodData();
+
+            // Prepare checkout data
+            const subtotal = cart.getTotalPrice();
+            const serviceFee = subtotal * 0.05;
+            const tax = subtotal * 0.1;
+            const total = subtotal + serviceFee + tax;
+
+            const checkoutData = {
+               cart_data: cart.items,
+               order_summary: {
+                  subtotal: subtotal,
+                  serviceFee: serviceFee,
+                  tax: tax,
+                  total: total
+               },
+               payment_method: paymentMethodData,
+               _token: '{{ csrf_token() }}'
+            };
+
+            // Send checkout request
+            const response = await fetch('{{ route("checkout.process") }}', {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                  'Accept': 'application/json'
+               },
+               body: JSON.stringify(checkoutData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+               // Clear cart on success
+               cart.clearCart();
+               renderCartItems();
+               
+               showMessage('Order placed successfully! Check your email for confirmation.');
+               
+               // Optionally redirect to thank you page
+               setTimeout(() => {
+                  window.location.href = '';
+               }, 3000);
+               
+            } else {
+               throw new Error(result.message || 'Failed to process order');
+            }
+
+         } catch (error) {
+            console.error('Checkout error:', error);
+            showMessage('Failed to process order: ' + error.message, 'error');
+         } finally {
+            hideLoading();
+         }
+      }
+
       // Render cart items
       function renderCartItems() {
          const cartItemsContainer = document.getElementById('cart-items-container');
          const emptyCartMessage = document.getElementById('empty-cart');
+         const cartContainer = document.querySelector('.cart-container');
          const subtotalElement = document.getElementById('subtotal');
          const serviceFeeElement = document.getElementById('service-fee');
          const taxElement = document.getElementById('tax');
          const totalElement = document.getElementById('total');
+         const checkoutBtn = document.getElementById('checkoutBtn');
 
          if (cart.items.length === 0) {
             cartItemsContainer.style.display = 'none';
             emptyCartMessage.style.display = 'block';
+            cartContainer.classList.add('empty');
             subtotalElement.textContent = '$0';
             serviceFeeElement.textContent = '$0';
             taxElement.textContent = '$0';
             totalElement.textContent = '$0';
+            checkoutBtn.disabled = true;
             return;
          }
 
          cartItemsContainer.style.display = 'block';
          emptyCartMessage.style.display = 'none';
+         cartContainer.classList.remove('empty');
+         checkoutBtn.disabled = false;
 
          // Clear existing items
          cartItemsContainer.innerHTML = '';
@@ -981,15 +1410,7 @@
                const productId = this.getAttribute('data-id');
                cart.removeItem(productId);
                renderCartItems();
-               
-               // Show success message
-               const successMessage = document.getElementById('success-message');
-               successMessage.textContent = 'Item removed from cart!';
-               successMessage.style.display = 'block';
-               
-               setTimeout(() => {
-                  successMessage.style.display = 'none';
-               }, 3000);
+               showMessage('Item removed from cart!');
             });
          });
       }
@@ -998,6 +1419,9 @@
       document.addEventListener('DOMContentLoaded', function() {
          cart.updateCartCount();
          renderCartItems();
+         
+         // Add checkout event listener
+         document.getElementById('checkoutBtn').addEventListener('click', processCheckout);
       });
    </script>
 </body>

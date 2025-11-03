@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id('order_id');
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->string('order_name', 50);
-            $table->integer('order_number');
+            $table->bigInteger('order_number')->unsigned();
             $table->string('order_payment_method', 50);
             $table->decimal('order_total_price', 8, 2);
             $table->string('payment_status')->default('pending');

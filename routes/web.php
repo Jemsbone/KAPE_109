@@ -13,7 +13,8 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CartJoinController;
 use App\Http\Controllers\OItemJoinController;
 use App\Http\Controllers\CMenuController;
-use App\Http\Controllers\CCartController; 
+use App\Http\Controllers\CCartController;
+use App\Http\Controllers\CheckoutController; // ✅ Added this line
 
 // ✅ Home route - Main homepage (for guests)
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -26,7 +27,7 @@ Route::get('/customer/home', function () {
 // ✅ Customer Menu Route (Main menu page)
 Route::get('/customer/cmenu', [CMenuController::class, 'index'])->name('customer.cmenu');
 
-// ✅ Customer Cart Route (NEW)
+// ✅ Customer Cart Route
 Route::get('/customer/cart', [CCartController::class, 'index'])->name('customer.cart');
 
 // ✅ Direct Category Routes
@@ -55,21 +56,25 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ✅ Protected Routes (require authentication)
 Route::middleware(['auth'])->group(function () {
-    // ✅ FIXED: Use your CMenuController for the main menu route
+    // ✅ Menu Page
     Route::get('/menu', [CMenuController::class, 'index'])->name('menu');
 
-    // ✅ Add cart to protected routes (users must be logged in to access cart)
+    // ✅ Cart Page
     Route::get('/cart', [CCartController::class, 'index'])->name('cart');
 
+    // ✅ Checkout Processing (NEW)
+    Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process')->middleware('auth');
+    // ✅ Orders Page
     Route::get('/orders', function () {
         return view('orders');
     })->name('orders');
 
+    // ✅ About Page
     Route::get('/about', function () {
         return view('about');
     })->name('about');
 
-    // ✅ Cart actions (protected - require authentication)
+    // ✅ Cart actions (protected)
     Route::post('/cart/add', [CCartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove', [CCartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update', [CCartController::class, 'updateCart'])->name('cart.update');
