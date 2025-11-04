@@ -122,6 +122,7 @@ class CheckoutController extends Controller
 
         // Create the order using your existing orders model
         $order = orders::create([
+            'user_id' => $user->user_id, // Link order to the authenticated user
             'employee_id' => null, // Set to null or assign based on your logic
             'order_name' => $orderName,
             'order_number' => $orderNumber,

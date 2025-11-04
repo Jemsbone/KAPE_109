@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Kape Na! - Welcome</title>
+   <title>Kape Na! - My Profile</title>
    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
    <style>
@@ -241,206 +240,198 @@
          border: 1px solid #2ecc71;
       }
 
-      /* Hero section */
-      .hero {
-         width: 100%;
-         margin-bottom: 100px;
-      }
-
-      .hero .swiper-slide {
-         display: flex;
-         align-items: center;
-         flex-wrap: wrap;
-         gap: 2rem;
-         padding-top: 9rem;
-      }
-
-      .hero .slide .content {
-         flex: 1 1 45rem;
-         text-align: center;
-      }
-
-      .hero .slide .image {
-         flex: 1 1 45rem;
-         display: flex;
-         justify-content: center;
-         align-items: center;
-      }
-
-      .hero .slide .image img {
-         width: 100%;
-         max-height: 40rem;
-         object-fit: cover;
-         border-radius: 1rem;
-      }
-
-      .hero .slide .content span {
-         color: var(--main-color);
-         font-size: 2.5rem;
-      }
-
-      .hero .slide .content h3 {
-         color: var(--white);
-         font-size: 7rem;
-         text-transform: capitalize;
-         margin: 1rem 0;
-      }
-
-      .swiper-pagination-bullet-active {
-         background-color: var(--white);
-      }
-
-      /* Category area */
-      .category .box-container {
-         display: grid;
-         grid-template-columns: repeat(auto-fit, minmax(27rem, 1fr));
-         gap: 2rem;
-         align-items: flex-start;
-      }
-
-      .category .box-container .box {
-         border: var(--border);
-         padding: 2rem;
-         text-align: center;
-         background: var(--black);
-         transition: transform 0.3s;
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         height: 100%;
-      }
-
-      .category .box-container .box:hover {
-         transform: translateY(-10px);
-      }
-
-      .category .box-container .box img {
-         width: 100%;
-         height: 20rem;
-         object-fit: cover;
+      .error-message {
+         background-color: rgba(231, 76, 60, 0.2);
+         color: #e74c3c;
+         padding: 1rem 2rem;
+         margin: 1rem auto;
+         max-width: 1200px;
          border-radius: 0.5rem;
+         font-size: 1.6rem;
+         text-align: center;
+         border: 1px solid #e74c3c;
       }
 
-      .category .box-container .box h3 {
-         font-size: 2.5rem;
-         margin-top: 1.5rem;
-         color: var(--white);
-         text-transform: capitalize;
-      }
-
-      .category .box-container .box:hover {
-         background-color: var(--white);
-      }
-
-      .category .box-container .box:hover h3 {
-         color: var(--black);
-      }
-
-      /* About section */
-      .about .row {
-         display: flex;
-         align-items: center;
-         flex-wrap: wrap;
-         gap: 1.5rem;
-         background-color: var(--black);
+      /* Profile Section Styles */
+      .profile-section {
+         min-height: 70vh;
          padding: 2rem;
       }
 
-      .about .row .image {
-         flex: 1 1 40rem;
+      .profile-container {
+         display: grid;
+         grid-template-columns: 1fr;
+         gap: 3rem;
+         margin-top: 2rem;
       }
 
-      .about .row .image img {
-         width: 100%;
+      /* Personal Information Card */
+      .info-card {
+         background-color: var(--black);
+         border: var(--border);
          border-radius: 1rem;
+         padding: 3rem;
       }
 
-      .about .row .content {
-         flex: 1 1 40rem;
+      .info-card h2 {
+         font-size: 2.8rem;
+         color: var(--main-color);
+         margin-bottom: 2rem;
          text-align: center;
+         border-bottom: 2px solid var(--main-color);
+         padding-bottom: 1rem;
       }
 
-      .about .row .content h3 {
-         font-size: 3rem;
+      .info-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+         gap: 2rem;
+         margin-top: 2rem;
+      }
+
+      .info-item {
+         padding: 1.5rem;
+         background-color: rgba(255, 255, 255, 0.05);
+         border-radius: 0.5rem;
+         transition: all 0.3s;
+      }
+
+      .info-item:hover {
+         background-color: rgba(211, 173, 127, 0.1);
+         transform: translateY(-3px);
+      }
+
+      .info-item label {
+         display: block;
+         font-size: 1.4rem;
+         color: var(--light-color);
+         margin-bottom: 0.5rem;
+         text-transform: uppercase;
+      }
+
+      .info-item .value {
+         font-size: 1.8rem;
          color: var(--white);
-         text-transform: capitalize;
-         margin-bottom: 1rem;
+         word-wrap: break-word;
       }
 
-      .about .row .content p {
-         padding: 1rem 0;
-         line-height: 2;
+      .info-item i {
+         color: var(--main-color);
+         margin-right: 1rem;
+         font-size: 2rem;
+      }
+
+      /* Order History Section */
+      .orders-section {
+         background-color: var(--black);
+         border: var(--border);
+         border-radius: 1rem;
+         padding: 3rem;
+         margin-top: 3rem;
+      }
+
+      .orders-section h2 {
+         font-size: 2.8rem;
+         color: var(--main-color);
+         margin-bottom: 2rem;
+         text-align: center;
+         border-bottom: 2px solid var(--main-color);
+         padding-bottom: 1rem;
+      }
+
+      .order-card {
+         background-color: rgba(255, 255, 255, 0.05);
+         border-left: 4px solid var(--main-color);
+         padding: 2rem;
+         margin-bottom: 2rem;
+         border-radius: 0.5rem;
+         transition: all 0.3s;
+      }
+
+      .order-card:hover {
+         background-color: rgba(211, 173, 127, 0.1);
+         transform: translateX(5px);
+      }
+
+      .order-header {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         margin-bottom: 1.5rem;
+         flex-wrap: wrap;
+         gap: 1rem;
+      }
+
+      .order-number {
+         font-size: 2rem;
+         color: var(--white);
+         font-weight: bold;
+      }
+
+      .order-status {
+         padding: 0.5rem 1.5rem;
+         border-radius: 2rem;
+         font-size: 1.4rem;
+         text-transform: uppercase;
+      }
+
+      .order-status.paid {
+         background-color: rgba(46, 204, 113, 0.2);
+         color: #2ecc71;
+         border: 1px solid #2ecc71;
+      }
+
+      .order-status.pending {
+         background-color: rgba(241, 196, 15, 0.2);
+         color: #f1c40f;
+         border: 1px solid #f1c40f;
+      }
+
+      .order-details {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+         gap: 1.5rem;
+         margin-top: 1rem;
+      }
+
+      .order-detail-item {
          font-size: 1.6rem;
          color: var(--light-color);
       }
-      
-      /* Subscribe section */
-      .subscribe {
-         text-align: center;
-         margin: 4rem 0;
+
+      .order-detail-item strong {
+         color: var(--white);
+         display: block;
+         margin-bottom: 0.5rem;
       }
 
-      .subscribe p {
+      .order-detail-item .highlight {
+         color: var(--main-color);
          font-size: 2rem;
+         font-weight: bold;
+      }
+
+      .empty-orders {
+         text-align: center;
+         padding: 4rem 2rem;
+      }
+
+      .empty-orders-icon {
+         font-size: 8rem;
          color: var(--light-color);
          margin-bottom: 2rem;
       }
 
-      .subscribe .email {
-         width: 50%;
-         padding: 1.5rem;
-         font-size: 1.8rem;
-         border-bottom: 2px solid var(--white);
-         background: transparent;
-         color: var(--white);
-         margin-right: 1rem;
-      }
-
-      /* Contact section */
-      .contact .row {
-         display: flex;
-         align-items: center;
-         flex-wrap: wrap;
-         gap: 1.5rem;
-      }
-
-      .contact .row .map {
-         flex: 1 1 40rem;
-      }
-
-      .contact .row .map iframe {
-         width: 100%;
-         height: 40rem;
-         border: var(--border);
-         border-radius: 1rem;
-      }
-
-      .contact .row form {
-         flex: 1 1 40rem;
-         padding: 2rem;
-         text-align: center;
-      }
-
-      .contact .row form h3 {
+      .empty-orders h3 {
          font-size: 2.5rem;
          color: var(--white);
-         margin-bottom: 1rem;
-         text-transform: capitalize;
+         margin-bottom: 1.5rem;
       }
 
-      .contact .row form .box {
-         margin: .7rem 0;
-         font-size: 1.8rem;
-         color: var(--white);
-         border-bottom: var(--border);
-         padding: 1.4rem;
-         width: 100%;
-         background: transparent;
-      }
-
-      .contact .row form textarea {
-         height: 20rem;
-         resize: none;
+      .empty-orders p {
+         font-size: 1.6rem;
+         color: var(--light-color);
+         margin-bottom: 2rem;
       }
 
       /* Footer styles */
@@ -576,20 +567,13 @@
             font-size: 2.2rem;
          }
 
-         .hero .slide .content h3 {
-            font-size: 5rem;
+         .info-grid {
+            grid-template-columns: 1fr;
          }
-         
-         .hero .slide .image {
-            flex: 1 1 100%;
-         }
-         
-         .contact .row {
+
+         .order-header {
             flex-direction: column;
-         }
-         
-         .subscribe .email {
-            width: 80%;
+            align-items: flex-start;
          }
       }
 
@@ -601,20 +585,12 @@
          .title {
             font-size: 3rem;
          }
-         
-         .hero .slide .content h3 {
-            font-size: 4rem;
-         }
-         
-         .category .box-container .box img {
-            height: 15rem;
-         }
       }
    </style>
 </head>
 
 <body>
-   <!-- Updated Header section -->
+   <!-- Header section -->
    <header class="header">
       <div class="flex">
          <a href="{{ route('customer.home') }}" class="logo">Kape Na! <i class="fas fa-coffee"></i></a>
@@ -666,113 +642,109 @@
       </div>
    @endif
 
-   <!-- showcase area -->
-   <section class="hero">
-      <div class="swiper hero-slider">
-         <div class="swiper-wrapper">
-            <div class="swiper-slide slide">
-               <div class="content">
-                  <span>order online</span>
-                  <h3>Turmeric Spiced Coffee</h3>
-                  <a href="{{ route('menu') }}" class="btn">see menus</a>
-               </div>
-               <div class="image">
-                  <img src="{{ asset('images/home-img-1.1.png') }}" alt="Turmeric Spiced Coffee">
-               </div>
-            </div>
-
-            <div class="swiper-slide slide">
-               <div class="content">
-                  <span>order online</span>
-                  <h3>delicious pizza</h3>
-                  <a href="{{ route('menu') }}" class="btn">see menus</a>
-               </div>
-               <div class="image">
-                  <img src="{{ asset('images/home-img-1.png') }}" alt="Delicious Pizza">
-               </div>
-            </div>
-
-            <div class="swiper-slide slide">
-               <div class="content">
-                  <span>order online</span>
-                  <h3>chezzy hamburger</h3>
-                  <a href="{{ route('menu') }}" class="btn">see menus</a>
-               </div>
-               <div class="image">
-                  <img src="{{ asset('images/home-img-2.png') }}" alt="Cheesy Hamburger">
-               </div>
-            </div>
-
-            <div class="swiper-slide slide">
-               <div class="content">
-                  <span>order online</span>
-                  <h3>roasted chicken</h3>
-                  <a href="{{ route('menu') }}" class="btn">see menus</a>
-               </div>
-               <div class="image">
-                  <img src="{{ asset('images/home-img-3.png') }}" alt="Roasted Chicken">
-               </div>
-            </div>
-         </div>
-         <div class="swiper-pagination"></div>
+   <!-- Error Messages -->
+   @if(session('error'))
+      <div class="error-message">
+         {{ session('error') }}
       </div>
-   </section>
+   @endif
 
-        <!-- category Area -->
-        <section class="category">
-        <h1 class="title">food category</h1>
-        <div class="box-container">
-            <a href="{{ route('category.coffee') }}" class="box">
-                <img src="{{ asset('images/cat-1.png') }}" alt="Coffee">
-                <h3>Coffee</h3>
-            </a>
-
-            <a href="{{ route('category.main-dish') }}" class="box">
-                <img src="{{ asset('images/cat-2.png') }}" alt="Special Dishes">
-                <h3>Special dishes</h3>
-            </a>
-
-            <a href="{{ route('category.drinks') }}" class="box">
-                <img src="{{ asset('images/cat-3.png') }}" alt="Drinks">
-                <h3>drinks</h3>
-            </a>
-
-            <a href="{{ route('category.desserts') }}" class="box">
-                <img src="{{ asset('images/cat-4.png') }}" alt="Desserts">
-                <h3>desserts</h3>
-            </a>
-        </div>
-        </section>
-
-   <!-- about section starts  -->
-   <section class="about">
-      <div class="row">
-         <div class="image">
-            <img src="{{ asset('images/coffee-shop-1209863_1280.jpg') }}" alt="Why Choose Us">
-         </div>
-         <div class="content">
-            <h3>why choose us?</h3>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deserunt, neque debitis incidunt qui ipsum sed doloremque a molestiae in veritatis ullam similique sunt aliquam dolores dolore? Quasi atque debitis nobis!</p>
-            <a href="{{ route('menu') }}" class="btn">our menu</a>
+   <!-- Profile Section -->
+   <section class="profile-section">
+      <h1 class="title">My Profile</h1>
+      
+      <div class="profile-container">
+         <!-- Personal Information Card -->
+         <div class="info-card">
+            <h2><i class="fas fa-user-circle"></i> Personal Information</h2>
+            
+            <div class="info-grid">
+               <div class="info-item">
+                  <label><i class="fas fa-user"></i> Full Name</label>
+                  <div class="value">{{ $user->name }}</div>
+               </div>
+               
+               <div class="info-item">
+                  <label><i class="fas fa-envelope"></i> Email Address</label>
+                  <div class="value">{{ $user->email }}</div>
+               </div>
+               
+               <div class="info-item">
+                  <label><i class="fas fa-phone"></i> Phone Number</label>
+                  <div class="value">{{ $user->phone }}</div>
+               </div>
+               
+               <div class="info-item">
+                  <label><i class="fas fa-map-marker-alt"></i> Address</label>
+                  <div class="value">{{ $user->address }}</div>
+               </div>
+               
+               <div class="info-item">
+                  <label><i class="fas fa-calendar-alt"></i> Member Since</label>
+                  <div class="value">{{ $user->created_at->format('F j, Y') }}</div>
+               </div>
+               
+               <div class="info-item">
+                  <label><i class="fas fa-check-circle"></i> Email Verified</label>
+                  <div class="value">
+                     @if($user->email_verified_at)
+                        <span style="color: #2ecc71;">✓ Verified</span>
+                     @else
+                        <span style="color: #e74c3c;">✗ Not Verified</span>
+                     @endif
+                  </div>
+               </div>
+            </div>
          </div>
       </div>
-   </section>
 
-
-   <!-- Map  -->
-   <section class="contact">
-      <div class="row">
-         <div class="map">
-            <iframe class="minmap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15777.467380763725!2d125.60962806977538!3d8.956199999999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3301ceb3eb7f5e0f%3A0x4a5f5b04a5b5b5b5!2sCaraga%20State%20University%20-%20Ampayon%20Campus!5e1!3m2!1sen!2sbd!4v1660587920897!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-         </div>
-
-         <form action="" method="post">
-            <h3>Contact Us !</h3>
-            <input type="text" name="name" maxlength="50" class="box" placeholder="Enter Your Name" required>
-            <input type="email" name="email" maxlength="50" class="box" placeholder="Enter Your Email" required>
-            <textarea name="msg" class="box" required placeholder="Enter Your Message" maxlength="500" cols="30" rows="10"></textarea>
-            <input type="submit" value="send" name="send" class="btn">
-         </form>
+      <!-- Order History Section -->
+      <div class="orders-section">
+         <h2><i class="fas fa-shopping-bag"></i> Order History</h2>
+         
+         @if($orders->count() > 0)
+            @foreach($orders as $order)
+               <div class="order-card">
+                  <div class="order-header">
+                     <span class="order-number">
+                        <i class="fas fa-receipt"></i> Order #{{ $order->order_number }}
+                     </span>
+                     <span class="order-status {{ strtolower($order->payment_status) }}">
+                        {{ $order->payment_status }}
+                     </span>
+                  </div>
+                  
+                  <div class="order-details">
+                     <div class="order-detail-item">
+                        <strong><i class="fas fa-box"></i> Order Name:</strong>
+                        {{ $order->order_name }}
+                     </div>
+                     
+                     <div class="order-detail-item">
+                        <strong><i class="fas fa-credit-card"></i> Payment Method:</strong>
+                        {{ ucfirst($order->order_payment_method) }}
+                     </div>
+                     
+                     <div class="order-detail-item">
+                        <strong><i class="fas fa-calendar"></i> Order Date:</strong>
+                        {{ $order->order_date->format('F j, Y g:i A') }}
+                     </div>
+                     
+                     <div class="order-detail-item">
+                        <strong><i class="fas fa-dollar-sign"></i> Total Amount:</strong>
+                        <span class="highlight">${{ number_format($order->order_total_price, 2) }}</span>
+                     </div>
+                  </div>
+               </div>
+            @endforeach
+         @else
+            <div class="empty-orders">
+               <i class="fas fa-shopping-bag empty-orders-icon"></i>
+               <h3>No Orders Yet</h3>
+               <p>You haven't placed any orders yet. Start shopping now!</p>
+               <a href="{{ route('customer.cmenu') }}" class="btn">Browse Menu</a>
+            </div>
+         @endif
       </div>
    </section>
 
@@ -831,29 +803,6 @@
 
       <div class="credit">&copy; copyright @ {{ date('Y') }} by <span>Cafe Shop</span> | <a>Magbanua, Jembo</a> | all rights reserved!</div>
    </footer>
-
-   <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-   <script>
-      // Initialize the swiper
-      var swiper = new Swiper(".hero-slider", {
-         loop: true,
-         grabCursor: true,
-         effect: "flip",
-         pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-         },
-      });
-
-      // Auto-hide success message after 5 seconds
-      document.addEventListener('DOMContentLoaded', function() {
-         const successMessage = document.querySelector('.success-message');
-         if (successMessage) {
-            setTimeout(() => {
-               successMessage.style.display = 'none';
-            }, 5000);
-         }
-      });
-   </script>
 </body>
 </html>
+

@@ -15,6 +15,8 @@ use App\Http\Controllers\OItemJoinController;
 use App\Http\Controllers\CMenuController;
 use App\Http\Controllers\CCartController;
 use App\Http\Controllers\CheckoutController; // ✅ Added this line
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\AdminAuthController;
 
 // ✅ Home route - Main homepage (for guests)
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -47,14 +49,21 @@ Route::get('/category/desserts', function () {
     return view('Customer.CDesserts');
 })->name('category.desserts');
 
-// ✅ Authentication Routes
+// ✅ Authentication Routes (User)
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ✅ Email Verification Routes (OTP-based)
+// ✅ Admin Authentication Routes
+Route::get('/adminregister', [AdminAuthController::class, 'showRegistrationForm'])->name('admin.register');
+Route::post('/adminregister', [AdminAuthController::class, 'register']);
+Route::get('/adminlogin', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/adminlogin', [AdminAuthController::class, 'login']);
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+// ✅ Email Verification Routes (OTP-based) - User
 Route::middleware('auth')->group(function () {
     // Verification page (shows OTP input form)
     Route::get('/email/verify', [AuthController::class, 'verificationNotice'])
@@ -69,6 +78,23 @@ Route::middleware('auth')->group(function () {
     Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
         ->middleware('throttle:3,1')
         ->name('verification.send');
+});
+
+// ✅ Admin Email Verification Routes (OTP-based)
+Route::middleware('auth:admin')->group(function () {
+    // Admin verification page (shows OTP input form)
+    Route::get('/admin/email/verify', [AdminAuthController::class, 'verificationNotice'])
+        ->name('admin.verification.notice');
+    
+    // Admin verify OTP code
+    Route::post('/admin/email/verify-otp', [AdminAuthController::class, 'verifyOtp'])
+        ->middleware('throttle:5,1')
+        ->name('admin.verification.verify');
+    
+    // Admin resend OTP code
+    Route::post('/admin/email/verification-notification', [AdminAuthController::class, 'resendVerification'])
+        ->middleware('throttle:3,1')
+        ->name('admin.verification.send');
 });
 
 // ✅ Protected Routes (require authentication and email verification)
@@ -96,6 +122,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/cart/add', [CCartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove', [CCartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update', [CCartController::class, 'updateCart'])->name('cart.update');
+
+    // ✅ Customer Profile and Settings
+    Route::get('/customer/profile', [CustomerController::class, 'showProfile'])->name('customer.profile');
+    Route::get('/customer/settings', [CustomerController::class, 'showSettings'])->name('customer.settings');
+    Route::delete('/customer/delete-account', [CustomerController::class, 'deleteAccount'])->name('customer.delete-account');
+});
+
+// ✅ Admin Dashboard (Protected - requires admin auth and verified email)
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        $admin = Auth::guard('admin')->user();
+        
+        // Check if email is verified
+        if (!$admin->hasVerifiedEmail()) {
+            return redirect()->route('admin.verification.notice');
+        }
+        
+        return view('Admin.admin_dashboard');
+    })->name('admin.dashboard');
 });
 
 // ✅ API routes (Backend Data)

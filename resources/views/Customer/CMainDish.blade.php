@@ -683,9 +683,9 @@
                         <i class="fas fa-chevron-down" style="font-size: 1.2rem; margin-left: 0.5rem;"></i>
                      </div>
                      <div class="dropdown-content">
-                        <a href="#"><i class="fas fa-user"></i> My Profile</a>
-                        <a href="{{ route('customer.cart') }}">Cart</a>
-                        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="{{ route('customer.profile') }}"><i class="fas fa-user"></i> My Profile</a>
+                        <a href="{{ route('customer.cart') }}"><i class="fas fa-shopping-cart"></i> Cart</a>
+                        <a href="{{ route('customer.settings') }}"><i class="fas fa-cog"></i> Settings</a>
                         <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                            @csrf
                            <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">
