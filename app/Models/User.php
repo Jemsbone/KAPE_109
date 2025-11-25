@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Notifications\OtpVerificationNotification;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
-    // Add this line to specify the primary key
     protected $primaryKey = 'user_id';
 
     protected $fillable = [
@@ -21,6 +19,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
         'password',
         'address',
+        'google_id',
+        'avatar',
+        'email_verified_at',
         'otp_code',
         'otp_expires_at',
     ];
@@ -28,7 +29,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-        'otp_code',
         'created_at',
         'updated_at',
     ];
@@ -54,9 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Generate a new OTP code for the user.
-     *
-     * @return string
+     * Generate a 6-digit OTP code
      */
     public function generateOtpCode()
     {
@@ -71,19 +69,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Verify the OTP code.
-     *
-     * @param string $code
-     * @return bool
+     * Verify the OTP code
      */
     public function verifyOtpCode($code)
     {
-        // Check if OTP exists, matches, and hasn't expired
         if ($this->otp_code === $code && 
             $this->otp_expires_at && 
             now()->lessThan($this->otp_expires_at)) {
             
-            // Mark email as verified and clear OTP
             $this->markEmailAsVerified();
             $this->clearOtpCode();
             
@@ -94,9 +87,15 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Clear the OTP code.
-     *
-     * @return void
+     * Mark email as verified
+     */
+    public function markEmailAsVerified()
+    {
+        return $this->update(['email_verified_at' => now()]);
+    }
+
+    /**
+     * Clear the OTP code
      */
     public function clearOtpCode()
     {
@@ -107,13 +106,19 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Send the OTP verification notification.
-     *
-     * @return void
+     * Check if email is verified
+     */
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->email_verified_at);
+    }
+
+    /**
+     * Send email verification notification with OTP
      */
     public function sendEmailVerificationNotification()
     {
         $otpCode = $this->generateOtpCode();
-        $this->notify(new OtpVerificationNotification($otpCode));
+        $this->notify(new \App\Notifications\UserOtpVerification($otpCode));
     }
 }

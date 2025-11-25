@@ -311,12 +311,13 @@
       }
 
       .product-box .product-image {
-         width: 100%;
-         height: 150px;
+         width: 200px;
+         height: 200px;
          object-fit: cover;
          border-radius: 0.5rem;
-         margin-bottom: 1.5rem;
+         margin: 0 auto 1.5rem auto;
          border: 2px solid var(--main-color);
+         display: block;
       }
 
       .product-box h3 {
@@ -561,6 +562,7 @@
                Cart 
                <span id="cart-count" class="cart-count">0</span>
             </a>
+            <a href="{{ route('about') }}">About</a>
          </nav>
          
          <div class="auth-section">
@@ -609,428 +611,61 @@
       <h2>CATEGORY</h2>
    </section>
 
-   <!-- Coffee Products Section -->
+
+   <!-- Dynamic Products Section - Grouped by Category -->
+   @php
+      $categories = ['coffee', 'main-dish', 'drinks', 'desserts'];
+      $categoryTitles = [
+         'coffee' => 'Coffee Products',
+         'main-dish' => 'Special Dishes Products',
+         'drinks' => 'Drink Products',
+         'desserts' => 'Dessert Products'
+      ];
+   @endphp
+
+   @foreach($categories as $category)
+      @php
+         $categoryProducts = $products->where('product_category', $category);
+      @endphp
+      
+      @if($categoryProducts->count() > 0)
+      <section class="products">
+         <h1 class="title">{{ $categoryTitles[$category] ?? $category . ' Products' }}</h1>
+         <div class="products-container">
+            @foreach($categoryProducts as $product)
+            <div class="product-box">
+               <img src="{{ asset('storage/' . $product->product_image) }}" alt="{{ $product->product_name }}" class="product-image">
+               <h3>{{ $product->product_name }}</h3>
+               <p class="price">${{ number_format($product->product_price, 2) }}</p>
+               <div class="quantity-controls">
+                  <div class="quantity-btn minus">-</div>
+                  <div class="quantity-display">1</div>
+                  <div class="quantity-btn plus">+</div>
+               </div>
+               <button class="add-to-cart-btn" 
+                       data-id="{{ $product->product_id }}" 
+                       data-name="{{ $product->product_name }}" 
+                       data-price="{{ $product->product_price }}" 
+                       data-image="{{ asset('storage/' . $product->product_image) }}">
+                  Add to Cart
+               </button>
+            </div>
+            @endforeach
+         </div>
+      </section>
+      @endif
+   @endforeach
+
+   @if($products->count() == 0)
    <section class="products">
-      <h1 class="title">Coffee Products</h1>
-      <div class="products-container">
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/cappuccino-1659544996.png') }}" alt="Cappuccino" class="product-image">
-            <h3>Cappuccino</h3>
-            <p class="price">$200</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="1" data-name="Cappuccino" data-price="200" data-image="{{ asset('uploaded_img/cappuccino-1659544996.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/cortado-1659544996.webp') }}" alt="Cortado" class="product-image">
-            <h3>Cortado</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="2" data-name="Cortado" data-price="20" data-image="{{ asset('uploaded_img/cortado-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/latte-1659544996.webp') }}" alt="Latte" class="product-image">
-            <h3>Latte</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="3" data-name="Latte" data-price="20" data-image="{{ asset('uploaded_img/latte-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/red-eye-1659544996.webp') }}" alt="Red Eye" class="product-image">
-            <h3>Red Eye</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="4" data-name="Red Eye" data-price="20" data-image="{{ asset('uploaded_img/red-eye-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/mocha-1659544996.webp') }}" alt="Mocha" class="product-image">
-            <h3>Mocha</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="5" data-name="Mocha" data-price="20" data-image="{{ asset('uploaded_img/mocha-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/raf-1659544996.webp') }}" alt="Raf" class="product-image">
-            <h3>Raf</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="6" data-name="Raf" data-price="20" data-image="{{ asset('uploaded_img/raf-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/macchiato-1659544996.webp') }}" alt="Macchiato" class="product-image">
-            <h3>Macchiato</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="7" data-name="Macchiato" data-price="20" data-image="{{ asset('uploaded_img/macchiato-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/cold-brew-1659544996.webp') }}" alt="Cold Brew" class="product-image">
-            <h3>Cold Brew</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="8" data-name="Cold Brew" data-price="20" data-image="{{ asset('uploaded_img/cold-brew-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/espresso-con-panna-1659544996.webp') }}" alt="Espresso Con Panna" class="product-image">
-            <h3>Espresso Con Panna</h3>
-            <p class="price">$200</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="9" data-name="Espresso Con Panna" data-price="200" data-image="{{ asset('uploaded_img/espresso-con-panna-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/cafe-cubano-1659544996.webp') }}" alt="Café Cubano" class="product-image">
-            <h3>Café Cubano</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="10" data-name="Café Cubano" data-price="20" data-image="{{ asset('uploaded_img/cafe-cubano-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/espresso-romano-1659544996.webp') }}" alt="Espresso Romano" class="product-image">
-            <h3>Espresso Romano</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="11" data-name="Espresso Romano" data-price="20" data-image="{{ asset('uploaded_img/espresso-romano-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/long-black-1659544996.webp') }}" alt="Long Black" class="product-image">
-            <h3>Long Black</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="12" data-name="Long Black" data-price="20" data-image="{{ asset('uploaded_img/long-black-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/caffe-breve-1659544996.webp') }}" alt="Caffè Breve" class="product-image">
-            <h3>Caffè Breve</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="13" data-name="Caffè Breve" data-price="20" data-image="{{ asset('uploaded_img/caffe-breve-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/affogato-1659544996.webp') }}" alt="Affogato" class="product-image">
-            <h3>Affogato</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="14" data-name="Affogato" data-price="20" data-image="{{ asset('uploaded_img/affogato-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/quad-shots-1659544996.webp') }}" alt="Quad Shots" class="product-image">
-            <h3>Quad Shots</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="15" data-name="Quad Shots" data-price="20" data-image="{{ asset('uploaded_img/quad-shots-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/mexican-coffee-1659544996.webp') }}" alt="Mexican Coffee" class="product-image">
-            <h3>Mexican Coffee</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="16" data-name="Mexican Coffee" data-price="20" data-image="{{ asset('uploaded_img/mexican-coffee-1659544996.webp') }}">Add to Cart</button>
-         </div>
+      <div style="width: 100%; text-align: center; padding: 5rem 0;">
+         <p style="font-size: 2rem; color: var(--light-color);">
+            <i class="fas fa-shopping-basket" style="font-size: 5rem; margin-bottom: 2rem; display: block; color: var(--main-color);"></i>
+            No products available at the moment.
+         </p>
       </div>
    </section>
-
-   <!-- Dashboard Welcome Section -->
-   <section class="dashboard-welcome">
-      <h2>CATEGORY</h2>
-   </section>
-
-   <!-- Special Dishes Products Section -->
-   <section class="products">
-      <h1 class="title">Special Dishes Products</h1>
-      <div class="products-container">
-         <div class="product-box">
-            <img src="{{ asset('project images/pizza-5.png') }}" alt="Mushroom & Meat Pizza" class="product-image">
-            <h3>Mushroom & Meat Pizza</h3>
-            <p class="price">$200</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="17" data-name="Mushroom & Meat Pizza" data-price="200" data-image="{{ asset('project images/pizza-5.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/pizza-1.png') }}" alt="Vegetable Pizza" class="product-image">
-            <h3>Vegetable Pizza</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="18" data-name="Vegetable Pizza" data-price="20" data-image="{{ asset('project images/pizza-1.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/pizza-2.png') }}" alt="Pepperoni & Tomato Pizza" class="product-image">
-            <h3>Pepperoni & Tomato Pizza</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="19" data-name="Pepperoni & Tomato Pizza" data-price="20" data-image="{{ asset('project images/pizza-2.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/pizza-4.png') }}" alt="Cheese Pizza" class="product-image">
-            <h3>Cheese Pizza</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="20" data-name="Cheese Pizza" data-price="20" data-image="{{ asset('project images/pizza-4.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/burger-2.png') }}" alt="Crispy Chicken Burger" class="product-image">
-            <h3>Crispy Chicken Burger</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="21" data-name="Crispy Chicken Burger" data-price="20" data-image="{{ asset('project images/burger-2.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/burger-1.png') }}" alt="Beef Cheeseburger" class="product-image">
-            <h3>Beef Cheeseburger</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="22" data-name="Beef Cheeseburger" data-price="20" data-image="{{ asset('project images/burger-1.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/dish-2.png') }}" alt="Pasta Dish" class="product-image">
-            <h3>Pasta Dish</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="23" data-name="Pasta Dish" data-price="20" data-image="{{ asset('project images/dish-2.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/dish-1.png') }}" alt="Plain Spaghetti Noodles" class="product-image">
-            <h3>Plain Spaghetti Noodles</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="24" data-name="Plain Spaghetti Noodles" data-price="20" data-image="{{ asset('project images/dish-1.png') }}">Add to Cart</button>
-         </div>
-      </div>
-   </section>
-
-   <!-- Dashboard Welcome Section -->
-   <section class="dashboard-welcome">
-      <h2>CATEGORY</h2>
-   </section>
-
-   <!-- Drink Products Section -->
-   <section class="products">
-      <h1 class="title">Drink Products</h1>
-      <div class="products-container">
-         <div class="product-box">
-            <img src="{{ asset('project images/drink-1.png') }}" alt="Orange Juice" class="product-image">
-            <h3>Orange Juice</h3>
-            <p class="price">$200</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="25" data-name="Orange Juice" data-price="200" data-image="{{ asset('project images/drink-1.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/drink-3.png') }}" alt="Mojito or Mint and Lime Cooler" class="product-image">
-            <h3>Mojito or Mint and Lime Cooler</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="26" data-name="Mojito or Mint and Lime Cooler" data-price="20" data-image="{{ asset('project images/drink-3.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/drink-4.png') }}" alt="Fruity/Red Iced Tea or Iced Fruit Juice" class="product-image">
-            <h3>Fruity/Red Iced Tea or Iced Fruit Juice</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="27" data-name="Fruity/Red Iced Tea or Iced Fruit Juice" data-price="20" data-image="{{ asset('project images/drink-4.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/drink-5.png') }}" alt="Strawberry Cocktail or Mocktail" class="product-image">
-            <h3>Strawberry Cocktail or Mocktail</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="28" data-name="Strawberry Cocktail or Mocktail" data-price="20" data-image="{{ asset('project images/drink-5.png') }}">Add to Cart</button>
-         </div>
-      </div>
-   </section>
-
-   <!-- Dashboard Welcome Section -->
-   <section class="dashboard-welcome">
-      <h2>CATEGORY</h2>
-   </section>
-
-   <!-- Dessert Products Section -->
-   <section class="products">
-      <h1 class="title">Dessert Products</h1>
-      <div class="products-container">
-         <div class="product-box">
-            <img src="{{ asset('project images/dessert-1.png') }}" alt="Strawberry Frappé or Smoothie" class="product-image">
-            <h3>Strawberry Frappé or Smoothie</h3>
-            <p class="price">$200</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="29" data-name="Strawberry Frappé or Smoothie" data-price="200" data-image="{{ asset('project images/dessert-1.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/dessert-3.png') }}" alt="Caramel Oreo Sundae or Soft Serve Parfait" class="product-image">
-            <h3>Caramel Oreo Sundae or Soft Serve Parfait</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="30" data-name="Caramel Oreo Sundae or Soft Serve Parfait" data-price="20" data-image="{{ asset('project images/dessert-3.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/dessert-4.png') }}" alt="Chocolate Cupcake with Whipped Cream and Cherry" class="product-image">
-            <h3>Chocolate Cupcake with Whipped Cream and Cherry</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="31" data-name="Chocolate Cupcake with Whipped Cream and Cherry" data-price="20" data-image="{{ asset('project images/dessert-4.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/dessert-5.png') }}" alt="Strawberry Ice Cream Sundae" class="product-image">
-            <h3>Strawberry Ice Cream Sundae</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="32" data-name="Strawberry Ice Cream Sundae" data-price="20" data-image="{{ asset('project images/dessert-5.png') }}">Add to Cart</button>
-         </div>
-      </div>
-   </section>
+   @endif
 
    <!-- Footer section -->
    <footer class="footer">

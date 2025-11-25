@@ -253,26 +253,26 @@
         </div>
         
         <nav class="nav-menu">
-            <a href="/admin/dashboard" class="nav-item active">
-                <i class="fas fa-home"></i> Dashboard
+            <a href="{{ route('admin.dashboard') }}" class="nav-item active">
+                <i class="fas fa-home"></i> home
             </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-coffee"></i> Product
+            <a href="{{ route('admin.products') }}" class="nav-item">
+                <i class="fas fa-coffee"></i> products
             </a>
-            <a href="#" class="nav-item">
+            <a href="{{ route('admin.orders') }}" class="nav-item">
                 <i class="fas fa-receipt"></i> orders
             </a>
             <a href="#" class="nav-item">
                 <i class="fas fa-user-shield"></i> admins
             </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-users"></i> employees
+            <a href="{{ route('admin.users') }}" class="nav-item">
+                <i class="fas fa-users"></i> users
             </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-user-circle"></i> users
+            <a href="{{ route('admin.employees') }}" class="nav-item">
+                <i class="fas fa-user-tie"></i> employees
             </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-comments"></i> messages
+            <a href="{{ route('admin.message') }}" class="nav-item">
+                <i class="fas fa-envelope"></i> messages
             </a>
         </nav>
 
@@ -306,109 +306,80 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-info">
-                        <h3>$80/-</h3>
-                        <p>total pendings</p>
+                        <h3>₱{{ number_format($totalPendingAmount, 2) }}</h3>
+                        <p>total pendings ({{ $totalPending }} orders)</p>
                     </div>
-                    <i class="fas fa-wallet stat-icon"></i>
+                    <i class="fas fa-clock stat-icon"></i>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-info">
-                        <h3>$0/-</h3>
-                        <p>total completes</p>
+                        <h3>₱{{ number_format($totalCompletedAmount, 2) }}</h3>
+                        <p>total completes ({{ $totalCompleted }} orders)</p>
                     </div>
-                    <i class="fas fa-wallet stat-icon"></i>
+                    <i class="fas fa-check-circle stat-icon"></i>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-info">
-                        <h3>$80/-</h3>
-                        <p>total orders</p>
+                        <h3>₱{{ number_format($totalOrdersAmount, 2) }}</h3>
+                        <p>total orders ({{ $totalOrders }} orders)</p>
                     </div>
-                    <i class="fas fa-wallet stat-icon"></i>
+                    <i class="fas fa-shopping-cart stat-icon"></i>
                 </div>
 
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>16</h3>
-                        <p>products added</p>
+                <a href="{{ route('admin.products') }}" style="text-decoration: none; color: inherit;">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>{{ $totalProducts }}</h3>
+                            <p>products added</p>
+                        </div>
+                        <i class="fas fa-th-large stat-icon"></i>
                     </div>
-                    <i class="fas fa-th-large stat-icon"></i>
-                </div>
+                </a>
             </div>
 
             <!-- Second Stats Grid -->
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>16</h3>
-                        <p>users accounts</p>
+                <a href="{{ route('admin.users') }}" style="text-decoration: none; color: inherit;">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>{{ $totalUsers }}</h3>
+                            <p>users accounts</p>
+                        </div>
+                        <i class="fas fa-user-circle stat-icon"></i>
                     </div>
-                    <i class="fas fa-user-circle stat-icon"></i>
-                </div>
+                </a>
 
                 <div class="stat-card">
                     <div class="stat-info">
-                        <h3>3</h3>
+                        <h3>{{ $totalAdmins }}</h3>
                         <p>admin accounts</p>
                     </div>
                     <i class="fas fa-user-shield stat-icon"></i>
                 </div>
 
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>3</h3>
-                        <p>employees accounts</p>
+                <a href="{{ route('admin.employees') }}" style="text-decoration: none; color: inherit;">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>{{ $totalEmployees }}</h3>
+                            <p>employee accounts</p>
+                        </div>
+                        <i class="fas fa-user-tie stat-icon"></i>
                     </div>
-                    <i class="fas fa-users stat-icon"></i>
-                </div>
+                </a>
 
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>3</h3>
-                        <p>new messages</p>
+                <a href="{{ route('admin.message') }}" style="text-decoration: none; color: inherit;">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>{{ $newMessages }}</h3>
+                            <p>new messages</p>
+                        </div>
+                        <i class="fas fa-envelope stat-icon"></i>
                     </div>
-                    <i class="fas fa-comment-dots stat-icon"></i>
-                </div>
+                </a>
             </div>
 
-            <!-- Divider -->
-            <div class="divider"></div>
-
-            <!-- Bottom Stats Grid -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>1,504</h3>
-                        <p>Daily Views</p>
-                    </div>
-                    <i class="fas fa-eye stat-icon"></i>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>80</h3>
-                        <p>Sales</p>
-                    </div>
-                    <i class="fas fa-shopping-cart stat-icon"></i>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>284</h3>
-                        <p>Rating</p>
-                    </div>
-                    <i class="fas fa-comment-alt stat-icon"></i>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>$7,842</h3>
-                        <p>Earning</p>
-                    </div>
-                    <i class="fas fa-money-bill-wave stat-icon"></i>
-                </div>
-            </div>
         </main>
     </div>
 </body>

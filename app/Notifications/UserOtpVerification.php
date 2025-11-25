@@ -3,19 +3,17 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/**
- * OTP Verification Notification
- * 
- * This notification sends a 6-digit OTP code to users
- * for email verification when they register for Kape Na!
- */
-class OtpVerificationNotification extends Notification
+class UserOtpVerification extends Notification
 {
     use Queueable;
 
+    /**
+     * The OTP code
+     */
     protected $otpCode;
 
     /**
@@ -42,18 +40,15 @@ class OtpVerificationNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Your Verification Code - Kape Na!')
-            ->greeting('Welcome to Kape Na! ☕')
-            ->line('Thank you for registering with us! We\'re excited to have you as part of our coffee-loving community.')
-            ->line('Your verification code is:')
-            ->line('')
+            ->subject('Verify Your Email - Kape Na!')
+            ->greeting('Hello ' . $notifiable->name . '!')
+            ->line('Thank you for registering with Kape Na! ☕')
+            ->line('Your One-Time Password (OTP) for email verification is:')
             ->line('**' . $this->otpCode . '**')
-            ->line('')
-            ->line('This code will expire in 10 minutes.')
-            ->line('Please enter this code on the verification page to complete your registration.')
-            ->line('')
-            ->line('If you did not create an account, no further action is required.')
-            ->salutation('Warm regards, The Kape Na! Team ☕');
+            ->line('This OTP will expire in 10 minutes.')
+            ->line('Please enter this code on the verification page to activate your account.')
+            ->line('If you did not create an account, please ignore this email.')
+            ->salutation('Best regards, The Kape Na! Team');
     }
 
     /**
@@ -64,8 +59,7 @@ class OtpVerificationNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'otp_code' => $this->otpCode,
         ];
     }
 }
-

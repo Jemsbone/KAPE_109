@@ -560,17 +560,17 @@
    <!-- Header section -->
    <header class="header">
       <div class="flex">
-         <a href="home.php" class="logo">Kape Na! <i class="fas fa-coffee"></i></a>
+         <a href="{{ route('home') }}" class="logo">Kape Na! <i class="fas fa-coffee"></i></a>
          <nav class="navbar">
-            <a href="home.php">Home</a>
-            <a href="menu.php">Menu</a>
-            <a href="orders.php">Orders</a>
-            <a href="about.php">About</a>
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('login') }}">Menu</a>
+            <a href="{{ route('login') }}">Orders</a>
+            <a href="{{ route('login') }}">About</a>
          </nav>
          <div style="text-align: center; margin: 1rem 0;">
             <nav class="navbar">
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
+            <a href="{{ route('login') }}">Login</a>
+            <a href="{{ route('register') }}">Register</a>
          </div>
       </div>
    </header>
@@ -583,7 +583,7 @@
                <div class="content">
                   <span>order online</span>
                   <h3>Turmeric Spiced Coffee</h3>
-                  <a href="menu.php" class="btn">see menus</a>
+                  <a href="{{ route('login') }}" class="btn">see menus</a>
                </div>
                <div class="image">
                   <img src="{{ asset('images/home-img-1.1.png') }}" alt="Turmeric Spiced Coffee">
@@ -594,7 +594,7 @@
                <div class="content">
                   <span>order online</span>
                   <h3>delicious pizza</h3>
-                  <a href="menu.php" class="btn">see menus</a>
+                  <a href="{{ route('login') }}" class="btn">see menus</a>
                </div>
                <div class="image">
                 <img src="{{ asset('images/home-img-1.png') }}"  alt="Delicious Pizza">
@@ -605,7 +605,7 @@
                <div class="content">
                   <span>order online</span>
                   <h3>chezzy hamburger</h3>
-                  <a href="menu.php" class="btn">see menus</a>
+                  <a href="{{ route('login') }}" class="btn">see menus</a>
                </div>
                <div class="image">
                   <img src="{{ asset('images/home-img-2.png') }}" alt="Cheesy Hamburger">
@@ -616,7 +616,7 @@
                <div class="content">
                   <span>order online</span>
                   <h3>roasted chicken</h3>
-                  <a href="menu.php" class="btn">see menus</a>
+                  <a href="{{ route('login') }}" class="btn">see menus</a>
                </div>
                <div class="image">
                   <img src="{{ asset('images/home-img-3.png') }}" alt="Roasted Chicken">
@@ -631,22 +631,22 @@
    <section class="category">
       <h1 class="title">food category</h1>
       <div class="box-container">
-         <a href="category.php?category=Coffee" class="box">
+         <a href="{{ route('login') }}" class="box">
             <img src="{{ asset('images/cat-1.png') }}" alt="Coffee">
             <h3>Coffee</h3>
          </a>
 
-         <a href="category.php?category=main dish" class="box">
+         <a href="{{ route('login') }}" class="box">
             <img src="{{ asset('images/cat-2.png') }}" alt="Special Dishes">
             <h3>Special dishes</h3>
          </a>
 
-         <a href="category.php?category=drinks" class="box">
+         <a href="{{ route('login') }}" class="box">
             <img src="{{ asset('images/cat-3.png') }}" alt="Drinks">
             <h3>drinks</h3>
          </a>
 
-         <a href="category.php?category=desserts" class="box">
+         <a href="{{ route('login') }}" class="box">
             <img src="{{ asset('images/cat-4.png') }}" alt="Desserts">
             <h3>desserts</h3>
          </a>
@@ -662,7 +662,7 @@
          <div class="content">
             <h3>why choose us?</h3>
             <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deserunt, neque debitis incidunt qui ipsum sed doloremque a molestiae in veritatis ullam similique sunt aliquam dolores dolore? Quasi atque debitis nobis!</p>
-            <a href="menu.php" class="btn">our menu</a>
+            <a href="{{ route('login') }}" class="btn">our menu</a>
          </div>
       </div>
    </section>
@@ -698,12 +698,19 @@
             <iframe class="minmap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15777.467380763725!2d125.60962806977538!3d8.956199999999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3301ceb3eb7f5e0f%3A0x4a5f5b04a5b5b5b5!2sCaraga%20State%20University%20-%20Ampayon%20Campus!5e1!3m2!1sen!2sbd!4v1660587920897!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
          </div>
 
-         <form action="" method="post">
+         <form action="{{ route('message.store') }}" method="post">
+            @csrf
             <h3>Contact Us !</h3>
-            <input type="text" name="name" maxlength="50" class="box" placeholder="Enter Your Name" required>
-            <input type="email" name="email" maxlength="50" class="box" placeholder="Enter Your Email" required>
-            <textarea name="msg" class="box" required placeholder="Enter Your Message" maxlength="500" cols="30" rows="10"></textarea>
-            <input type="submit" value="send" name="send" class="btn">
+            @auth
+               <input type="text" name="name" maxlength="50" class="box" placeholder="Enter Your Name" value="{{ Auth::user()->name }}" required>
+               <input type="email" name="email" maxlength="50" class="box" placeholder="Enter Your Email" value="{{ Auth::user()->email }}" required>
+               <textarea name="msg" class="box" required placeholder="Enter Your Message" maxlength="500" cols="30" rows="10"></textarea>
+               <input type="submit" value="send" name="send" class="btn">
+            @else
+               <p style="color: var(--light-color); font-size: 1.6rem; text-align: center; padding: 2rem;">
+                  Please <a href="{{ route('login') }}" style="color: black; text-decoration: underline;">login</a> to send us a message.
+               </p>
+            @endauth
          </form>
       </div>
    </section>
@@ -724,9 +731,12 @@
          },
       });
 
-      // Mobile menu toggle
-      document.querySelector('#menu-btn').onclick = () => {
-         document.querySelector('.navbar').classList.toggle('active');
+      // Mobile menu toggle (if menu button exists)
+      const menuBtn = document.querySelector('#menu-btn');
+      if (menuBtn) {
+         menuBtn.onclick = () => {
+            document.querySelector('.navbar').classList.toggle('active');
+         }
       }
 
       // Function to load footer content

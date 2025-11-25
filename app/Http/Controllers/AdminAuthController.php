@@ -42,51 +42,48 @@ class AdminAuthController extends Controller
             'admin_password' => Hash::make($request->password),
         ]);
 
-        // Log the admin in
+        // Log the admin in (but not verified yet)
         Auth::guard('admin')->login($admin);
         $request->session()->regenerate();
 
-        // Generate OTP and send email immediately
+        // Generate and send OTP for registration verification
         try {
-            \Log::info('Starting admin registration OTP process', [
+            \Log::info('Generating OTP for new admin registration', [
                 'admin_id' => $admin->admin_id,
                 'admin_email' => $admin->admin_email
             ]);
             
-            // Generate OTP code first
+            // Generate OTP code
             $otpCode = $admin->generateOtpCode();
             
-            \Log::info('OTP code generated', [
+            \Log::info('OTP code generated for registration', [
                 'admin_id' => $admin->admin_id,
                 'otp_code' => $otpCode,
                 'expires_at' => $admin->otp_expires_at
             ]);
             
-            // Send email immediately using direct notification
+            // Send OTP email
             $admin->notify(new \App\Notifications\AdminOtpVerificationNotification($otpCode));
             
-            \Log::info('Admin OTP email sent successfully', [
+            \Log::info('Admin registration OTP sent successfully', [
                 'admin_id' => $admin->admin_id,
-                'admin_email' => $admin->admin_email,
-                'otp_code' => $otpCode,
-                'message' => 'Email delivered to mail server'
+                'admin_email' => $admin->admin_email
             ]);
+            
+            // Redirect to verification page
+            return redirect()->route('admin.verification.notice')
+                ->with('success', 'Registration successful! Please check your email for the verification code.');
         } catch (\Exception $e) {
-            \Log::error('Failed to send admin OTP email', [
+            \Log::error('Failed to send admin registration OTP', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'admin_email' => $admin->admin_email,
                 'admin_id' => $admin->admin_id
             ]);
             
-            // Still redirect but show a warning
             return redirect()->route('admin.verification.notice')
-                ->with('warning', 'Registration successful, but there was an issue sending the email. Please contact support if you don\'t receive the code.');
+                ->with('warning', 'Registration successful, but we had trouble sending the verification email. Please try resending the code.');
         }
-
-        // Redirect to OTP verification page
-        return redirect()->route('admin.verification.notice')
-            ->with('success', 'Registration successful! A verification code has been sent to your email address.');
     }
 
     /**
@@ -127,47 +124,9 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->login($admin, $request->remember);
         $request->session()->regenerate();
 
-        // Generate OTP and send email immediately
-        try {
-            \Log::info('Starting admin login OTP process', [
-                'admin_id' => $admin->admin_id,
-                'admin_email' => $admin->admin_email
-            ]);
-            
-            // Generate OTP code first
-            $otpCode = $admin->generateOtpCode();
-            
-            \Log::info('OTP code generated for login', [
-                'admin_id' => $admin->admin_id,
-                'otp_code' => $otpCode,
-                'expires_at' => $admin->otp_expires_at
-            ]);
-            
-            // Send email immediately using direct notification
-            $admin->notify(new \App\Notifications\AdminOtpVerificationNotification($otpCode));
-            
-            \Log::info('Admin login OTP email sent successfully', [
-                'admin_id' => $admin->admin_id,
-                'admin_email' => $admin->admin_email,
-                'otp_code' => $otpCode,
-                'message' => 'Email delivered to mail server'
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Failed to send admin login OTP email', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'admin_email' => $admin->admin_email,
-                'admin_id' => $admin->admin_id
-            ]);
-            
-            // Still redirect but show a warning
-            return redirect()->route('admin.verification.notice')
-                ->with('warning', 'Logged in successfully, but there was an issue sending the verification code. Please contact support if you don\'t receive it.');
-        }
-
-        // Redirect to OTP verification page
-        return redirect()->route('admin.verification.notice')
-            ->with('success', 'A verification code has been sent to your email address.');
+        // Redirect directly to admin dashboard (OTP verification removed)
+        return redirect()->route('admin.dashboard')
+            ->with('success', 'Welcome back to Kape Na! Admin Dashboard.');
     }
 
     /**

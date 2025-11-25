@@ -298,11 +298,60 @@
          justify-content: space-between;
          height: 100%;
          min-height: 350px;
+         position: relative;
+      }
+
+      .product-box.out-of-stock {
+         opacity: 0.6;
+      }
+
+      .product-box.out-of-stock::before {
+         content: 'OUT OF STOCK';
+         position: absolute;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%) rotate(-15deg);
+         background: var(--red);
+         color: var(--white);
+         padding: 1rem 3rem;
+         font-size: 2.5rem;
+         font-weight: bold;
+         border-radius: 0.5rem;
+         z-index: 10;
+         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+         letter-spacing: 0.2rem;
+      }
+
+      .product-box.out-of-stock .add-to-cart-btn {
+         opacity: 0.5;
+         cursor: not-allowed;
+      }
+
+      .stock-badge {
+         position: absolute;
+         top: 1rem;
+         right: 1rem;
+         background: var(--red);
+         color: var(--white);
+         padding: 0.5rem 1rem;
+         border-radius: 0.3rem;
+         font-size: 1.2rem;
+         font-weight: bold;
+         z-index: 5;
+      }
+
+      .stock-badge.low-stock {
+         background: #ff9800;
       }
 
       .product-box:hover {
          transform: translateY(-10px);
          background-color: var(--white);
+      }
+
+      .product-box.out-of-stock:hover {
+         transform: none;
+         background-color: var(--black);
       }
 
       .product-box:hover h3,
@@ -312,12 +361,13 @@
       }
 
       .product-box .product-image {
-         width: 100%;
-         height: 150px;
+         width: 200px;
+         height: 200px;
          object-fit: cover;
          border-radius: 0.5rem;
-         margin-bottom: 1.5rem;
+         margin: 0 auto 1.5rem auto;
          border: 2px solid var(--main-color);
+         display: block;
       }
 
       .product-box h3 {
@@ -722,101 +772,38 @@
    <section class="products">
       <h1 class="title">Special Dishes Products</h1>
       <div class="products-container">
-         <div class="product-box">
-            <img src="{{ asset('project images/pizza-5.png') }}" alt="Mushroom & Meat Pizza" class="product-image">
-            <h3>Mushroom & Meat Pizza</h3>
-            <p class="price">$200</p>
+         @forelse($products as $product)
+         <div class="product-box {{ $product->product_stock <= 0 ? 'out-of-stock' : '' }}">
+            @if($product->product_stock <= 0)
+               <span class="stock-badge">Out of Stock</span>
+            @elseif($product->product_stock < 10)
+               <span class="stock-badge low-stock">Low Stock ({{ $product->product_stock }})</span>
+            @endif
+            <img src="{{ asset('storage/' . $product->product_image) }}" alt="{{ $product->product_name }}" class="product-image">
+            <h3>{{ $product->product_name }}</h3>
+            <p class="price">${{ number_format($product->product_price, 2) }}</p>
             <div class="quantity-controls">
                <div class="quantity-btn minus">-</div>
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn" data-id="17" data-name="Mushroom & Meat Pizza" data-price="200" data-image="{{ asset('project images/pizza-5.png') }}">Add to Cart</button>
+            <button class="add-to-cart-btn" 
+                    data-id="{{ $product->product_id }}" 
+                    data-name="{{ $product->product_name }}" 
+                    data-price="{{ $product->product_price }}" 
+                    data-image="{{ asset('storage/' . $product->product_image) }}"
+                    {{ $product->product_stock <= 0 ? 'disabled' : '' }}>
+               {{ $product->product_stock <= 0 ? 'Out of Stock' : 'Add to Cart' }}
+            </button>
          </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/pizza-1.png') }}" alt="Vegetable Pizza" class="product-image">
-            <h3>Vegetable Pizza</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="18" data-name="Vegetable Pizza" data-price="20" data-image="{{ asset('project images/pizza-1.png') }}">Add to Cart</button>
+         @empty
+         <div style="width: 100%; text-align: center; padding: 5rem 0; grid-column: 1 / -1;">
+            <p style="font-size: 2rem; color: var(--light-color);">
+               <i class="fas fa-utensils" style="font-size: 5rem; margin-bottom: 2rem; display: block; color: var(--main-color);"></i>
+               No main dish products available at the moment.
+            </p>
          </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/pizza-2.png') }}" alt="Pepperoni & Tomato Pizza" class="product-image">
-            <h3>Pepperoni & Tomato Pizza</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="19" data-name="Pepperoni & Tomato Pizza" data-price="20" data-image="{{ asset('project images/pizza-2.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/pizza-4.png') }}" alt="Cheese Pizza" class="product-image">
-            <h3>Cheese Pizza</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="20" data-name="Cheese Pizza" data-price="20" data-image="{{ asset('project images/pizza-4.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/burger-2.png') }}" alt="Crispy Chicken Burger" class="product-image">
-            <h3>Crispy Chicken Burger</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="21" data-name="Crispy Chicken Burger" data-price="20" data-image="{{ asset('project images/burger-2.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/burger-1.png') }}" alt="Beef Cheeseburger" class="product-image">
-            <h3>Beef Cheeseburger</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="22" data-name="Beef Cheeseburger" data-price="20" data-image="{{ asset('project images/burger-1.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/dish-2.png') }}" alt="Pasta Dish" class="product-image">
-            <h3>Pasta Dish</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="23" data-name="Pasta Dish" data-price="20" data-image="{{ asset('project images/dish-2.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/dish-1.png') }}" alt="Plain Spaghetti Noodles" class="product-image">
-            <h3>Plain Spaghetti Noodles</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="24" data-name="Plain Spaghetti Noodles" data-price="20" data-image="{{ asset('project images/dish-1.png') }}">Add to Cart</button>
-         </div>
+         @endforelse
       </div>
    </section>
 

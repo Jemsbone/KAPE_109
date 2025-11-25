@@ -242,6 +242,222 @@
             margin-right: 0.5rem;
         }
 
+        /* Social login divider */
+        .social-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--light-color);
+            font-size: 1.6rem;
+        }
+
+        .social-divider::before,
+        .social-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--light-color);
+        }
+
+        .social-divider span {
+            padding: 0 1rem;
+        }
+
+        /* Google login button */
+        .btn-google {
+            width: 100%;
+            padding: 1.5rem;
+            background-color: #fff;
+            color: #444;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+
+        .btn-google:hover {
+            background-color: #f8f8f8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-google i {
+            font-size: 2rem;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: var(--black);
+            border-radius: 1rem;
+            padding: 3rem;
+            max-width: 50rem;
+            width: 90%;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h3 {
+            color: var(--white);
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .modal-header i {
+            color: var(--main-color);
+            font-size: 3rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--light-color);
+            font-size: 3rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            padding: 0;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: var(--red);
+        }
+
+        .modal-body {
+            color: var(--light-color);
+            font-size: 1.6rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .modal-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body ul {
+            list-style: none;
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body ul li {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .modal-body ul li::before {
+            content: '✓';
+            color: var(--main-color);
+            font-weight: bold;
+            position: absolute;
+            left: -2rem;
+        }
+
+        .modal-body .highlight {
+            color: var(--main-color);
+            font-weight: bold;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 1.2rem 2.5rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-family: 'Anton', sans-serif;
+        }
+
+        .modal-btn-cancel {
+            background-color: transparent;
+            color: var(--light-color);
+            border: 2px solid var(--light-color);
+        }
+
+        .modal-btn-cancel:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-color: var(--white);
+        }
+
+        .modal-btn-confirm {
+            background-color: var(--main-color);
+            color: var(--black);
+        }
+
+        .modal-btn-confirm:hover {
+            background-color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
         /* Error message styling */
         .error-message {
             color: var(--red);
@@ -340,15 +556,67 @@
                     <a href="#">Forgot Password?</a>
                 </div>
                 <button type="submit" class="btn">Login</button>
-                <div class="register-link">
-                    <p>Don't have an account? <a href="{{ route('register') }}">Register</a></p>
-                </div>
             </form>
+
+            <!-- Social Login Divider -->
+            <div class="social-divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Google Login Button -->
+            <button type="button" class="btn-google" onclick="showGoogleModal()">
+                <i class="fab fa-google"></i>
+                <span>Continue with Google</span>
+            </button>
+
+            <div class="register-link">
+                <p>Don't have an account? <a href="{{ route('register') }}">Register</a></p>
+            </div>
+
             <div class="back-home">
                 <a href="/"><i class="fas fa-arrow-left"></i> Back to Home</a>
             </div>
         </div>
     </main>
+
+    <!-- Google OAuth Confirmation Modal -->
+    <div class="modal-overlay" id="googleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fab fa-google"></i>
+                    Continue with Google
+                </h3>
+                <button class="modal-close" onclick="closeGoogleModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>By continuing with Google, you agree to:</p>
+                <ul>
+                    <li>Create a new account or sign in to your existing account</li>
+                    <li>Share your Google profile information (name and email)</li>
+                    <li>Allow Kape Na! to access your basic profile</li>
+                </ul>
+                <p>
+                    If you don't have an account with us, <span class="highlight">one will be created automatically</span> 
+                    using your Google information.
+                </p>
+                <p>
+                    Your email will be <span class="highlight">automatically verified</span> through Google, 
+                    so you won't need to verify it separately.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" onclick="closeGoogleModal()">
+                    Cancel
+                </button>
+                <a href="{{ route('google.redirect') }}" class="modal-btn modal-btn-confirm" style="text-decoration: none; display: inline-block;">
+                    Continue
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Add functionality to form inputs
@@ -384,6 +652,36 @@
                     e.preventDefault();
                     alert('Please fill in all fields');
                     return;
+                }
+            });
+        });
+
+        // Google OAuth Modal Functions
+        function showGoogleModal() {
+            const modal = document.getElementById('googleModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeGoogleModal() {
+            const modal = document.getElementById('googleModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+
+        // Close modal when clicking outside the modal content
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('googleModal');
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeGoogleModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeGoogleModal();
                 }
             });
         });

@@ -17,6 +17,11 @@ use App\Http\Controllers\CCartController;
 use App\Http\Controllers\CheckoutController; // ✅ Added this line
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\CoffeeController;
+use App\Http\Controllers\DessertsController;
+use App\Http\Controllers\DrinksController;
+use App\Http\Controllers\MainDishController;
+use App\Http\Controllers\MessageController;
 
 // ✅ Home route - Main homepage (for guests)
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -24,7 +29,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // ✅ Customer Home (protected route for logged-in users)
 Route::get('/customer/home', function () {
     return view('Customer.customerhome');
-})->name('customer.home')->middleware(['auth', 'verified']);
+})->name('customer.home')->middleware('auth');
 
 // ✅ Customer Menu Route (Main menu page)
 Route::get('/customer/cmenu', [CMenuController::class, 'index'])->name('customer.cmenu');
@@ -32,22 +37,11 @@ Route::get('/customer/cmenu', [CMenuController::class, 'index'])->name('customer
 // ✅ Customer Cart Route
 Route::get('/customer/cart', [CCartController::class, 'index'])->name('customer.cart');
 
-// ✅ Direct Category Routes
-Route::get('/category/coffee', function () {
-    return view('Customer.CCoffee');
-})->name('category.coffee');
-
-Route::get('/category/main-dish', function () {
-    return view('Customer.CMainDish');
-})->name('category.main-dish');
-
-Route::get('/category/drinks', function () {
-    return view('Customer.CDrinks');
-})->name('category.drinks');
-
-Route::get('/category/desserts', function () {
-    return view('Customer.CDesserts');
-})->name('category.desserts');
+// ✅ Direct Category Routes (with dynamic products from database)
+Route::get('/category/coffee', [CoffeeController::class, 'index'])->name('category.coffee');
+Route::get('/category/main-dish', [MainDishController::class, 'index'])->name('category.main-dish');
+Route::get('/category/drinks', [DrinksController::class, 'index'])->name('category.drinks');
+Route::get('/category/desserts', [DessertsController::class, 'index'])->name('category.desserts');
 
 // ✅ Authentication Routes (User)
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -56,6 +50,15 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// ✅ Email Verification Routes (OTP)
+Route::get('/verify-email', [AuthController::class, 'showVerificationForm'])->name('verification.notice');
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:5,1')->name('verification.verify');
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->middleware('throttle:3,1')->name('verification.send');
+
+// ✅ Google OAuth Routes
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/auth/google/call-back', [AuthController::class, 'handleGoogleCallback'])->name('google.callback');
+
 // ✅ Admin Authentication Routes
 Route::get('/adminregister', [AdminAuthController::class, 'showRegistrationForm'])->name('admin.register');
 Route::post('/adminregister', [AdminAuthController::class, 'register']);
@@ -63,22 +66,6 @@ Route::get('/adminlogin', [AdminAuthController::class, 'showLoginForm'])->name('
 Route::post('/adminlogin', [AdminAuthController::class, 'login']);
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-// ✅ Email Verification Routes (OTP-based) - User
-Route::middleware('auth')->group(function () {
-    // Verification page (shows OTP input form)
-    Route::get('/email/verify', [AuthController::class, 'verificationNotice'])
-        ->name('verification.notice');
-    
-    // Verify OTP code
-    Route::post('/email/verify-otp', [AuthController::class, 'verifyOtp'])
-        ->middleware('throttle:5,1')
-        ->name('verification.verify');
-    
-    // Resend OTP code
-    Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
-        ->middleware('throttle:3,1')
-        ->name('verification.send');
-});
 
 // ✅ Admin Email Verification Routes (OTP-based)
 Route::middleware('auth:admin')->group(function () {
@@ -97,8 +84,8 @@ Route::middleware('auth:admin')->group(function () {
         ->name('admin.verification.send');
 });
 
-// ✅ Protected Routes (require authentication and email verification)
-Route::middleware(['auth', 'verified'])->group(function () {
+// ✅ Protected Routes (require authentication)
+Route::middleware('auth')->group(function () {
     // ✅ Menu Page
     Route::get('/menu', [CMenuController::class, 'index'])->name('menu');
 
@@ -127,20 +114,47 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/customer/profile', [CustomerController::class, 'showProfile'])->name('customer.profile');
     Route::get('/customer/settings', [CustomerController::class, 'showSettings'])->name('customer.settings');
     Route::delete('/customer/delete-account', [CustomerController::class, 'deleteAccount'])->name('customer.delete-account');
+    
+    // ✅ Customer Messages (Feedback)
+    Route::post('/message/send', [MessageController::class, 'store'])->name('message.store');
 });
 
-// ✅ Admin Dashboard (Protected - requires admin auth and verified email)
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        $admin = Auth::guard('admin')->user();
-        
-        // Check if email is verified
-        if (!$admin->hasVerifiedEmail()) {
-            return redirect()->route('admin.verification.notice');
-        }
-        
-        return view('Admin.admin_dashboard');
-    })->name('admin.dashboard');
+// ✅ Admin Dashboard (Protected - requires admin auth and email verification)
+Route::middleware(['auth:admin', 'admin.verified'])->group(function () {
+    Route::get('/admin/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('admin.dashboard');
+
+    // Admin Product Routes
+    Route::get('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('admin.products');
+    Route::post('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'store'])->name('admin.products.store');
+    Route::get('/admin/products/{id}/edit', [\App\Http\Controllers\Admin\ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::put('/admin/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/admin/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])->name('admin.products.destroy');
+
+    // Admin Orders Routes
+    Route::get('/admin/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders');
+    Route::put('/admin/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'update'])->name('admin.orders.update');
+    Route::delete('/admin/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.delete');
+
+    // Admin Employees Routes
+    Route::get('/admin/employees', [\App\Http\Controllers\Admin\EmployeeController::class, 'index'])->name('admin.employees');
+    Route::get('/admin/employees/create', [\App\Http\Controllers\Admin\EmployeeController::class, 'create'])->name('admin.employees.create');
+    Route::post('/admin/employees', [\App\Http\Controllers\Admin\EmployeeController::class, 'store'])->name('admin.employees.store');
+    Route::delete('/admin/employees/{id}', [\App\Http\Controllers\Admin\EmployeeController::class, 'destroy'])->name('admin.employees.delete');
+
+    // Admin Users Routes
+    Route::get('/admin/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users');
+    Route::delete('/admin/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.delete');
+    
+    // Admin Messages Routes
+    Route::get('/admin/messages', [MessageController::class, 'index'])->name('admin.message');
+    Route::patch('/admin/messages/{id}/read', [MessageController::class, 'markAsRead'])->name('admin.message.read');
+    Route::delete('/admin/messages/{id}', [MessageController::class, 'destroy'])->name('admin.message.delete');
+    
+    // Shortcut routes for consistency
+    Route::get('/admin/product', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('admin.product');
+    Route::get('/admin/order', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.order');
+    Route::get('/admin/user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.user');
+    Route::get('/admin/employee', [\App\Http\Controllers\Admin\EmployeeController::class, 'index'])->name('admin.employee');
 });
 
 // ✅ API routes (Backend Data)

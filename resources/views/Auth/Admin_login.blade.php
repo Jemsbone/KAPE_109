@@ -338,7 +338,7 @@
             
             <div class="info-box">
                 <i class="fas fa-info-circle"></i>
-                This is the admin login portal. After logging in, you will receive a verification code via email for security purposes.
+                This is the admin login portal. Enter your credentials to access the admin panel.
             </div>
             
             <!-- Display Error Messages -->
@@ -411,7 +411,7 @@
                 // Simple validation
                 if (!email || !password) {
                     e.preventDefault();
-                    alert('Please fill in all fields');
+                    alert('Please enter both email and password');
                     return;
                 }
             });

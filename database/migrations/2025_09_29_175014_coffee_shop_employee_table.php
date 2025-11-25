@@ -13,11 +13,11 @@ return new class extends Migration
             $table->unsignedBigInteger('admin_id')->nullable();
             $table->string('employee_name', 50);
             $table->string('employee_age', 50);
-            $table->string('employee_sex', 50);
-            $table->string('employee_phone', 50);
-            $table->string('employee_email', 50);
-            $table->string('employee_address', 50);
-            $table->string('employee_password', 50);
+            $table->string('employee_sex', 50)->nullable();
+            $table->string('employee_phone', 50)->nullable();
+            $table->string('employee_email', 50)->nullable();
+            $table->string('employee_address', 50)->nullable();
+            $table->string('employee_password', 255);
             $table->timestamps();
 
             $table->foreign('admin_id')

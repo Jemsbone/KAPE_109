@@ -298,11 +298,60 @@
          justify-content: space-between;
          height: 100%;
          min-height: 350px;
+         position: relative;
+      }
+
+      .product-box.out-of-stock {
+         opacity: 0.6;
+      }
+
+      .product-box.out-of-stock::before {
+         content: 'OUT OF STOCK';
+         position: absolute;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%) rotate(-15deg);
+         background: var(--red);
+         color: var(--white);
+         padding: 1rem 3rem;
+         font-size: 2.5rem;
+         font-weight: bold;
+         border-radius: 0.5rem;
+         z-index: 10;
+         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+         letter-spacing: 0.2rem;
+      }
+
+      .product-box.out-of-stock .add-to-cart-btn {
+         opacity: 0.5;
+         cursor: not-allowed;
+      }
+
+      .stock-badge {
+         position: absolute;
+         top: 1rem;
+         right: 1rem;
+         background: var(--red);
+         color: var(--white);
+         padding: 0.5rem 1rem;
+         border-radius: 0.3rem;
+         font-size: 1.2rem;
+         font-weight: bold;
+         z-index: 5;
+      }
+
+      .stock-badge.low-stock {
+         background: #ff9800;
       }
 
       .product-box:hover {
          transform: translateY(-10px);
          background-color: var(--white);
+      }
+
+      .product-box.out-of-stock:hover {
+         transform: none;
+         background-color: var(--black);
       }
 
       .product-box:hover h3,
@@ -312,12 +361,13 @@
       }
 
       .product-box .product-image {
-         width: 100%;
-         height: 150px;
+         width: 200px;
+         height: 200px;
          object-fit: cover;
          border-radius: 0.5rem;
-         margin-bottom: 1.5rem;
+         margin: 0 auto 1.5rem auto;
          border: 2px solid var(--main-color);
+         display: block;
       }
 
       .product-box h3 {
@@ -722,53 +772,38 @@
    <section class="products">
       <h1 class="title">Drink Products</h1>
       <div class="products-container">
-         <div class="product-box">
-            <img src="{{ asset('project images/drink-1.png') }}" alt="Orange Juice" class="product-image">
-            <h3>Orange Juice</h3>
-            <p class="price">$200</p>
+         @forelse($products as $product)
+         <div class="product-box {{ $product->product_stock <= 0 ? 'out-of-stock' : '' }}">
+            @if($product->product_stock <= 0)
+               <span class="stock-badge">Out of Stock</span>
+            @elseif($product->product_stock < 10)
+               <span class="stock-badge low-stock">Low Stock ({{ $product->product_stock }})</span>
+            @endif
+            <img src="{{ asset('storage/' . $product->product_image) }}" alt="{{ $product->product_name }}" class="product-image">
+            <h3>{{ $product->product_name }}</h3>
+            <p class="price">${{ number_format($product->product_price, 2) }}</p>
             <div class="quantity-controls">
                <div class="quantity-btn minus">-</div>
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn" data-id="25" data-name="Orange Juice" data-price="200" data-image="{{ asset('project images/drink-1.png') }}">Add to Cart</button>
+            <button class="add-to-cart-btn" 
+                    data-id="{{ $product->product_id }}" 
+                    data-name="{{ $product->product_name }}" 
+                    data-price="{{ $product->product_price }}" 
+                    data-image="{{ asset('storage/' . $product->product_image) }}"
+                    {{ $product->product_stock <= 0 ? 'disabled' : '' }}>
+               {{ $product->product_stock <= 0 ? 'Out of Stock' : 'Add to Cart' }}
+            </button>
          </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/drink-3.png') }}" alt="Mojito or Mint and Lime Cooler" class="product-image">
-            <h3>Mojito or Mint and Lime Cooler</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="26" data-name="Mojito or Mint and Lime Cooler" data-price="20" data-image="{{ asset('project images/drink-3.png') }}">Add to Cart</button>
+         @empty
+         <div style="width: 100%; text-align: center; padding: 5rem 0; grid-column: 1 / -1;">
+            <p style="font-size: 2rem; color: var(--light-color);">
+               <i class="fas fa-glass-martini-alt" style="font-size: 5rem; margin-bottom: 2rem; display: block; color: var(--main-color);"></i>
+               No drink products available at the moment.
+            </p>
          </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/drink-4.png') }}" alt="Fruity/Red Iced Tea or Iced Fruit Juice" class="product-image">
-            <h3>Fruity/Red Iced Tea or Iced Fruit Juice</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="27" data-name="Fruity/Red Iced Tea or Iced Fruit Juice" data-price="20" data-image="{{ asset('project images/drink-4.png') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('project images/drink-5.png') }}" alt="Strawberry Cocktail or Mocktail" class="product-image">
-            <h3>Strawberry Cocktail or Mocktail</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="28" data-name="Strawberry Cocktail or Mocktail" data-price="20" data-image="{{ asset('project images/drink-5.png') }}">Add to Cart</button>
-         </div>
+         @endforelse
       </div>
    </section>
 

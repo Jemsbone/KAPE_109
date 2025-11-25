@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class DessertsController extends Controller
 {
@@ -11,6 +12,11 @@ class DessertsController extends Controller
      */
     public function index()
     {
-        return view('Customer.CDesserts');
+        // Fetch all dessert products from database (including out-of-stock items)
+        $products = Product::where('product_category', 'desserts')
+            ->orderBy('product_name', 'asc')
+            ->get();
+        
+        return view('Customer.CDesserts', compact('products'));
     }
 }

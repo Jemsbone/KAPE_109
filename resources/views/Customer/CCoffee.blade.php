@@ -298,11 +298,60 @@
          justify-content: space-between;
          height: 100%;
          min-height: 350px;
+         position: relative;
+      }
+
+      .product-box.out-of-stock {
+         opacity: 0.6;
+      }
+
+      .product-box.out-of-stock::before {
+         content: 'OUT OF STOCK';
+         position: absolute;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%) rotate(-15deg);
+         background: var(--red);
+         color: var(--white);
+         padding: 1rem 3rem;
+         font-size: 2.5rem;
+         font-weight: bold;
+         border-radius: 0.5rem;
+         z-index: 10;
+         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+         letter-spacing: 0.2rem;
+      }
+
+      .product-box.out-of-stock .add-to-cart-btn {
+         opacity: 0.5;
+         cursor: not-allowed;
+      }
+
+      .stock-badge {
+         position: absolute;
+         top: 1rem;
+         right: 1rem;
+         background: var(--red);
+         color: var(--white);
+         padding: 0.5rem 1rem;
+         border-radius: 0.3rem;
+         font-size: 1.2rem;
+         font-weight: bold;
+         z-index: 5;
+      }
+
+      .stock-badge.low-stock {
+         background: #ff9800;
       }
 
       .product-box:hover {
          transform: translateY(-10px);
          background-color: var(--white);
+      }
+
+      .product-box.out-of-stock:hover {
+         transform: none;
+         background-color: var(--black);
       }
 
       .product-box:hover h3,
@@ -312,12 +361,13 @@
       }
 
       .product-box .product-image {
-         width: 100%;
-         height: 150px;
+         width: 200px;
+         height: 200px;
          object-fit: cover;
          border-radius: 0.5rem;
-         margin-bottom: 1.5rem;
+         margin: 0 auto 1.5rem auto;
          border: 2px solid var(--main-color);
+         display: block;
       }
 
       .product-box h3 {
@@ -722,197 +772,38 @@
    <section class="products">
       <h1 class="title">Coffee Products</h1>
       <div class="products-container">
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/cappuccino-1659544996.png') }}" alt="Cappuccino" class="product-image">
-            <h3>Cappuccino</h3>
-            <p class="price">$200</p>
+         @forelse($products as $product)
+         <div class="product-box {{ $product->product_stock <= 0 ? 'out-of-stock' : '' }}">
+            @if($product->product_stock <= 0)
+               <span class="stock-badge">Out of Stock</span>
+            @elseif($product->product_stock < 10)
+               <span class="stock-badge low-stock">Low Stock ({{ $product->product_stock }})</span>
+            @endif
+            <img src="{{ asset('storage/' . $product->product_image) }}" alt="{{ $product->product_name }}" class="product-image">
+            <h3>{{ $product->product_name }}</h3>
+            <p class="price">${{ number_format($product->product_price, 2) }}</p>
             <div class="quantity-controls">
                <div class="quantity-btn minus">-</div>
                <div class="quantity-display">1</div>
                <div class="quantity-btn plus">+</div>
             </div>
-            <button class="add-to-cart-btn" data-id="1" data-name="Cappuccino" data-price="200" data-image="{{ asset('uploaded_img/cappuccino-1659544996.png') }}">Add to Cart</button>
+            <button class="add-to-cart-btn" 
+                    data-id="{{ $product->product_id }}" 
+                    data-name="{{ $product->product_name }}" 
+                    data-price="{{ $product->product_price }}" 
+                    data-image="{{ asset('storage/' . $product->product_image) }}"
+                    {{ $product->product_stock <= 0 ? 'disabled' : '' }}>
+               {{ $product->product_stock <= 0 ? 'Out of Stock' : 'Add to Cart' }}
+            </button>
          </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/cortado-1659544996.webp') }}" alt="Cortado" class="product-image">
-            <h3>Cortado</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="2" data-name="Cortado" data-price="20" data-image="{{ asset('uploaded_img/cortado-1659544996.webp') }}">Add to Cart</button>
+         @empty
+         <div style="width: 100%; text-align: center; padding: 5rem 0; grid-column: 1 / -1;">
+            <p style="font-size: 2rem; color: var(--light-color);">
+               <i class="fas fa-coffee" style="font-size: 5rem; margin-bottom: 2rem; display: block; color: var(--main-color);"></i>
+               No coffee products available at the moment.
+            </p>
          </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/latte-1659544996.webp') }}" alt="Latte" class="product-image">
-            <h3>Latte</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="3" data-name="Latte" data-price="20" data-image="{{ asset('uploaded_img/latte-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/red-eye-1659544996.webp') }}" alt="Red Eye" class="product-image">
-            <h3>Red Eye</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="4" data-name="Red Eye" data-price="20" data-image="{{ asset('uploaded_img/red-eye-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/mocha-1659544996.webp') }}" alt="Mocha" class="product-image">
-            <h3>Mocha</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="5" data-name="Mocha" data-price="20" data-image="{{ asset('uploaded_img/mocha-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/raf-1659544996.webp') }}" alt="Raf" class="product-image">
-            <h3>Raf</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="6" data-name="Raf" data-price="20" data-image="{{ asset('uploaded_img/raf-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/macchiato-1659544996.webp') }}" alt="Macchiato" class="product-image">
-            <h3>Macchiato</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="7" data-name="Macchiato" data-price="20" data-image="{{ asset('uploaded_img/macchiato-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/cold-brew-1659544996.webp') }}" alt="Cold Brew" class="product-image">
-            <h3>Cold Brew</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="8" data-name="Cold Brew" data-price="20" data-image="{{ asset('uploaded_img/cold-brew-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/espresso-con-panna-1659544996.webp') }}" alt="Espresso Con Panna" class="product-image">
-            <h3>Espresso Con Panna</h3>
-            <p class="price">$200</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="9" data-name="Espresso Con Panna" data-price="200" data-image="{{ asset('uploaded_img/espresso-con-panna-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/cafe-cubano-1659544996.webp') }}" alt="Café Cubano" class="product-image">
-            <h3>Café Cubano</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="10" data-name="Café Cubano" data-price="20" data-image="{{ asset('uploaded_img/cafe-cubano-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/espresso-romano-1659544996.webp') }}" alt="Espresso Romano" class="product-image">
-            <h3>Espresso Romano</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="11" data-name="Espresso Romano" data-price="20" data-image="{{ asset('uploaded_img/espresso-romano-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/long-black-1659544996.webp') }}" alt="Long Black" class="product-image">
-            <h3>Long Black</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="12" data-name="Long Black" data-price="20" data-image="{{ asset('uploaded_img/long-black-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/caffe-breve-1659544996.webp') }}" alt="Caffè Breve" class="product-image">
-            <h3>Caffè Breve</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="13" data-name="Caffè Breve" data-price="20" data-image="{{ asset('uploaded_img/caffe-breve-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/affogato-1659544996.webp') }}" alt="Affogato" class="product-image">
-            <h3>Affogato</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="14" data-name="Affogato" data-price="20" data-image="{{ asset('uploaded_img/affogato-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/quad-shots-1659544996.webp') }}" alt="Quad Shots" class="product-image">
-            <h3>Quad Shots</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="15" data-name="Quad Shots" data-price="20" data-image="{{ asset('uploaded_img/quad-shots-1659544996.webp') }}">Add to Cart</button>
-         </div>
-
-         <div class="product-box">
-            <img src="{{ asset('uploaded_img/mexican-coffee-1659544996.webp') }}" alt="Mexican Coffee" class="product-image">
-            <h3>Mexican Coffee</h3>
-            <p class="price">$20</p>
-            <div class="quantity-controls">
-               <div class="quantity-btn minus">-</div>
-               <div class="quantity-display">1</div>
-               <div class="quantity-btn plus">+</div>
-            </div>
-            <button class="add-to-cart-btn" data-id="16" data-name="Mexican Coffee" data-price="20" data-image="{{ asset('uploaded_img/mexican-coffee-1659544996.webp') }}">Add to Cart</button>
-         </div>
+         @endforelse
       </div>
    </section>
 

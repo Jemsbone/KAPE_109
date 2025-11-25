@@ -766,12 +766,19 @@
             <iframe class="minmap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15777.467380763725!2d125.60962806977538!3d8.956199999999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3301ceb3eb7f5e0f%3A0x4a5f5b04a5b5b5b5!2sCaraga%20State%20University%20-%20Ampayon%20Campus!5e1!3m2!1sen!2sbd!4v1660587920897!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
          </div>
 
-         <form action="" method="post">
+         <form action="{{ route('message.store') }}" method="post">
+            @csrf
             <h3>Contact Us !</h3>
-            <input type="text" name="name" maxlength="50" class="box" placeholder="Enter Your Name" required>
-            <input type="email" name="email" maxlength="50" class="box" placeholder="Enter Your Email" required>
-            <textarea name="msg" class="box" required placeholder="Enter Your Message" maxlength="500" cols="30" rows="10"></textarea>
-            <input type="submit" value="send" name="send" class="btn">
+            @auth
+               <input type="text" name="name" maxlength="50" class="box" placeholder="Enter Your Name" value="{{ Auth::user()->name }}" required>
+               <input type="email" name="email" maxlength="50" class="box" placeholder="Enter Your Email" value="{{ Auth::user()->email }}" required>
+               <textarea name="msg" class="box" required placeholder="Enter Your Message" maxlength="500" cols="30" rows="10"></textarea>
+               <input type="submit" value="send" name="send" class="btn">
+            @else
+               <p style="color: var(--light-color); font-size: 1.6rem; text-align: center; padding: 2rem;">
+                  Please <a href="{{ route('login') }}" style="color: var(--main-color); text-decoration: underline;">login</a> to send us a message.
+               </p>
+            @endauth
          </form>
       </div>
    </section>

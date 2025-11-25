@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class MainDishController extends Controller
 {
@@ -11,6 +12,11 @@ class MainDishController extends Controller
      */
     public function index()
     {
-        return view('Customer.CMainDish');
+        // Fetch all main dish products from database (including out-of-stock items)
+        $products = Product::where('product_category', 'main-dish')
+            ->orderBy('product_name', 'asc')
+            ->get();
+        
+        return view('Customer.CMainDish', compact('products'));
     }
 }

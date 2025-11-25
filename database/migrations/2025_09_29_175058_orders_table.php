@@ -10,14 +10,20 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id('order_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->string('order_name', 50);
-            $table->bigInteger('order_number')->unsigned();
+            $table->unsignedBigInteger('order_number');
             $table->string('order_payment_method', 50);
             $table->decimal('order_total_price', 8, 2);
             $table->string('payment_status')->default('pending');
             $table->timestamp('order_date')->useCurrent();
             $table->timestamps();
+
+            $table->foreign('user_id')
+                  ->references('user_id')
+                  ->on('users')
+                  ->onDelete('set null');
 
             $table->foreign('employee_id')
                   ->references('employee_id')
