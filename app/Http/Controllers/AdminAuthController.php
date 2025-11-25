@@ -156,7 +156,7 @@ class AdminAuthController extends Controller
     public function verifyOtp(Request $request)
     {
         $request->validate([
-            'otp' => 'required|string|size:6',
+            'otp_code' => 'required|string|size:6',
         ]);
 
         $admin = Auth::guard('admin')->user();
@@ -174,13 +174,13 @@ class AdminAuthController extends Controller
         }
 
         // Verify the OTP code
-        if ($admin->verifyOtpCode($request->otp)) {
+        if ($admin->verifyOtpCode($request->otp_code)) {
             return redirect()->route('admin.dashboard')
                 ->with('success', 'Your email has been verified successfully! Welcome to Kape Na! Admin Dashboard.');
         }
 
         return back()->withErrors([
-            'otp' => 'Invalid or expired verification code. Please try again or request a new code.',
+            'otp_code' => 'Invalid or expired verification code. Please try again or request a new code.',
         ]);
     }
 
